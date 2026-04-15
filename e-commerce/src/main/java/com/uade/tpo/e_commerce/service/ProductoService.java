@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.uade.tpo.e_commerce.model.Producto;
 import com.uade.tpo.e_commerce.repository.ProductoRepository;
+import com.uade.tpo.e_commerce.exceptions.ResourceNotFoundException;
 
 import jakarta.transaction.Transactional;
 
@@ -22,10 +23,14 @@ public class ProductoService {
     }
 
     public Producto getProductoById(Long id) {
-        return productoRepository.findById(id).orElse(null);
+        return productoRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Producto no encontrado con el id: " + id));
     }
 
     public void deleteProductoById(Long id) {
+        if (!productoRepository.existsById(id)) {
+            throw new ResourceNotFoundException("Producto no encontrado con el id: " + id);
+        }
         productoRepository.deleteById(id);
     }
 
@@ -35,12 +40,9 @@ public class ProductoService {
     }
 
     public Producto updateProducto(Long id, Producto producto) {
-        Producto existingProducto = getProductoById(id);
-        if (existingProducto != null) {
-            existingProducto.setNombre(producto.getNombre());
-            existingProducto.setDescripcion(producto.getDescripcion());
-            return productoRepository.save(existingProducto);
-        }
-        return null;
+        Producto existingProducto = getProductoById(id); // Lanzará excepción si no existe
+        existingProducto.setNombre(producto.getNombre());
+        existingProducto.setDescripcion(producto.getDescripcion());
+        return productoRepository.save(existingProducto);
     }
 }
