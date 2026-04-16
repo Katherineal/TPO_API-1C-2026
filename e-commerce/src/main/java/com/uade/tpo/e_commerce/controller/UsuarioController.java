@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.uade.tpo.e_commerce.model.Usuario;
+import com.uade.tpo.e_commerce.dto.UsuarioDto;
 import com.uade.tpo.e_commerce.service.UsuarioService;
 
 @RestController
@@ -18,7 +18,7 @@ public class UsuarioController {
     private UsuarioService usuarioService;
 
     @GetMapping
-    public List<Usuario> getAllUsuarios() {
+    public List<UsuarioDto> getAllUsuarios() {
         return usuarioService.getAllUsuarios();
     }
 }

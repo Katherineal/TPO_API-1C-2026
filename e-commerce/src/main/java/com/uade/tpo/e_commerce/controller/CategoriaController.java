@@ -3,7 +3,7 @@ package com.uade.tpo.e_commerce.controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.uade.tpo.e_commerce.model.Categoria;
+import com.uade.tpo.e_commerce.dto.CategoriaDto;
 import com.uade.tpo.e_commerce.service.CategoriaService;
 
 import java.util.List;
@@ -22,7 +22,7 @@ public class CategoriaController {
     private CategoriaService categoriaService;
 
     @GetMapping
-    public List<Categoria> getAllCategorias() {
+    public List<CategoriaDto> getAllCategorias() {
         return categoriaService.getAllCategorias();
     }
     

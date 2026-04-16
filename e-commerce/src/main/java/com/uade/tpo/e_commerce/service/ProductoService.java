@@ -1,10 +1,15 @@
 package com.uade.tpo.e_commerce.service;
 
 import java.util.List;
+import java.util.ArrayList;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.uade.tpo.e_commerce.dto.CategoriaDto;
+import com.uade.tpo.e_commerce.dto.ProductoDto;
+import com.uade.tpo.e_commerce.model.Categoria;
 import com.uade.tpo.e_commerce.model.Producto;
 import com.uade.tpo.e_commerce.repository.ProductoRepository;
 
@@ -16,31 +21,86 @@ public class ProductoService {
  
     @Autowired
     private ProductoRepository productoRepository;
+
+    @Autowired
+    private CategoriaService categoriaService;
     
-    public List<Producto> getAllProductos() {
-        return productoRepository.findAll();
+    public List<ProductoDto> getAllProductos() {
+        return productoRepository.findAll().stream()
+                .map(this::mapToDto)
+                .collect(Collectors.toList());
     }
 
-    public Producto getProductoById(Long id) {
-        return productoRepository.findById(id).orElse(null);
+    public ProductoDto getProductoById(Long id) {
+        Producto producto = productoRepository.findById(id).orElse(null);
+        return mapToDto(producto);
     }
 
     public void deleteProductoById(Long id) {
         productoRepository.deleteById(id);
     }
 
-    public Producto saveProducto(Producto producto) {
-        return productoRepository.save(producto);
-
+    public ProductoDto saveProducto(ProductoDto productoDto) {
+        Producto producto = mapToEntity(productoDto);
+        Producto saved = productoRepository.save(producto);
+        return mapToDto(saved);
     }
 
-    public Producto updateProducto(Long id, Producto producto) {
-        Producto existingProducto = getProductoById(id);
+    public ProductoDto updateProducto(Long id, ProductoDto productoDto) {
+        Producto existingProducto = productoRepository.findById(id).orElse(null);
         if (existingProducto != null) {
-            existingProducto.setNombre(producto.getNombre());
-            existingProducto.setDescripcion(producto.getDescripcion());
-            return productoRepository.save(existingProducto);
+            existingProducto.setNombre(productoDto.getNombre());
+            existingProducto.setDescripcion(productoDto.getDescripcion());
+            existingProducto.setPrecio(productoDto.getPrecio());
+            existingProducto.setStock(productoDto.getStock());
+            
+            if (productoDto.getCategorias() != null) {
+                List<Categoria> categorias = productoDto.getCategorias().stream()
+                    .map(categoriaService::mapToEntity)
+                    .collect(Collectors.toList());
+                existingProducto.setCategorias(categorias);
+            }
+            
+            Producto updated = productoRepository.save(existingProducto);
+            return mapToDto(updated);
         }
         return null;
+    }
+
+    public ProductoDto mapToDto(Producto producto) {
+        if (producto == null) return null;
+        List<CategoriaDto> categoriasDto = new ArrayList<>();
+        if (producto.getCategorias() != null) {
+            categoriasDto = producto.getCategorias().stream()
+                .map(categoriaService::mapToDto)
+                .collect(Collectors.toList());
+        }
+        
+        return ProductoDto.builder()
+                .id(producto.getId())
+                .nombre(producto.getNombre())
+                .descripcion(producto.getDescripcion())
+                .precio(producto.getPrecio())
+                .stock(producto.getStock())
+                .categorias(categoriasDto)
+                .build();
+    }
+
+    public Producto mapToEntity(ProductoDto productoDto) {
+        if (productoDto == null) return null;
+        Producto producto = new Producto();
+        producto.setId(productoDto.getId());
+        producto.setNombre(productoDto.getNombre());
+        producto.setDescripcion(productoDto.getDescripcion());
+        producto.setPrecio(productoDto.getPrecio());
+        producto.setStock(productoDto.getStock());
+        
+        if (productoDto.getCategorias() != null) {
+            List<Categoria> categorias = productoDto.getCategorias().stream()
+                .map(categoriaService::mapToEntity)
+                .collect(Collectors.toList());
+            producto.setCategorias(categorias);
+        }
+        return producto;
     }
 }

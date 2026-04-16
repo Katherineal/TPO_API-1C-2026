@@ -3,7 +3,7 @@ package com.uade.tpo.e_commerce.controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.uade.tpo.e_commerce.model.Producto;
+import com.uade.tpo.e_commerce.dto.ProductoDto;
 import com.uade.tpo.e_commerce.service.ProductoService;
 
 import java.util.List;
@@ -30,13 +30,13 @@ public class ProductoController {
 
     //http://localhost:8080/api/productos -> devuelve la lista de productos
     @GetMapping
-    public List<Producto> getAllProductos() {
+    public List<ProductoDto> getAllProductos() {
         return productoService.getAllProductos();
     }
 
     //http://localhost:8080/api/productos/1 -> devuelve el producto con id 1
     @GetMapping("/{id}")
-    public Producto getProductoById(@PathVariable Long id) {
+    public ProductoDto getProductoById(@PathVariable Long id) {
         return productoService.getProductoById(id);
     }
 
@@ -47,14 +47,14 @@ public class ProductoController {
     }
 
     @PostMapping
-    public Producto saveProducto(@RequestBody Producto producto) {
-        return productoService.saveProducto(producto);
+    public ProductoDto saveProducto(@RequestBody ProductoDto productoDto) {
+        return productoService.saveProducto(productoDto);
 
     }
     
     @PutMapping("/{id}")
-    public Producto udpateProducto(@PathVariable Long id, @RequestBody Producto producto) {
-        return productoService.updateProducto(id, producto);
+    public ProductoDto udpateProducto(@PathVariable Long id, @RequestBody ProductoDto productoDto) {
+        return productoService.updateProducto(id, productoDto);
     }
     
     
