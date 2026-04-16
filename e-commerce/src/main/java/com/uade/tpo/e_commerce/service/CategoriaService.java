@@ -25,6 +25,11 @@ public class CategoriaService {
                 .collect(Collectors.toList());
     }
 
+    public CategoriaDto saveCategoria(CategoriaDto categoriaDto) {
+        Categoria categoria = mapToEntity(categoriaDto);
+        return mapToDto(categoriaRepository.save(categoria));
+    }
+
     public CategoriaDto mapToDto(Categoria categoria) {
         if (categoria == null) return null;
         return CategoriaDto.builder()
@@ -36,7 +41,9 @@ public class CategoriaService {
     public Categoria mapToEntity(CategoriaDto categoriaDto) {
         if (categoriaDto == null) return null;
         Categoria categoria = new Categoria();
-        categoria.setId(categoriaDto.getId());
+        if (categoriaDto.getId() != null) {
+            categoria.setId(categoriaDto.getId());
+        }
         categoria.setNombre(categoriaDto.getNombre());
         return categoria;
     }

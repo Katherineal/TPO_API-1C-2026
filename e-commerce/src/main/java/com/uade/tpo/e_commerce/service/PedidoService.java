@@ -25,6 +25,11 @@ public class PedidoService {
                 .collect(Collectors.toList());
     }
 
+    public PedidoDto savePedido(PedidoDto pedidoDto) {
+        Pedido pedido = mapToEntity(pedidoDto);
+        return mapToDto(pedidoRepository.save(pedido));
+    }
+
     public PedidoDto mapToDto(Pedido pedido) {
         if (pedido == null) return null;
         return PedidoDto.builder()
@@ -37,7 +42,9 @@ public class PedidoService {
     public Pedido mapToEntity(PedidoDto pedidoDto) {
         if (pedidoDto == null) return null;
         Pedido pedido = new Pedido();
-        pedido.setId(pedidoDto.getId());
+        if (pedidoDto.getId() != null) {
+            pedido.setId(pedidoDto.getId());
+        }
         pedido.setNombre(pedidoDto.getNombre());
         pedido.setDescripcion(pedidoDto.getDescripcion());
         return pedido;

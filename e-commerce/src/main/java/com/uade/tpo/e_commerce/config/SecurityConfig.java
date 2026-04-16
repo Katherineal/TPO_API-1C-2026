@@ -28,10 +28,12 @@ public class SecurityConfig {
                 .requestMatchers("/h2-console/**").permitAll() // Permitimos el acceso a la consola de H2
                 
                 // Profe, acá configuramos las reglas de acceso por roles (Role-Based Access Control).
-                .requestMatchers(HttpMethod.GET, "/api/productos/**").permitAll()
-                .requestMatchers(HttpMethod.POST, "/api/productos/**").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.GET, "/api/productos/**").permitAll()                .requestMatchers(HttpMethod.POST, "/api/productos/**").hasRole("ADMIN")
                 .requestMatchers(HttpMethod.PUT, "/api/productos/**").hasRole("ADMIN")
                 .requestMatchers(HttpMethod.DELETE, "/api/productos/**").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.POST, "/api/categorias/**").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.PUT, "/api/categorias/**").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.DELETE, "/api/categorias/**").hasRole("ADMIN")
                 
                 .anyRequest().authenticated() // Profe, acá bloqueamos todo el resto si no hay token.
             )
