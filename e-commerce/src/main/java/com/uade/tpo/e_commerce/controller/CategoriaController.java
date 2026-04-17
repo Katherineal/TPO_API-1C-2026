@@ -7,7 +7,9 @@ import org.springframework.http.HttpStatus;
 
 import com.uade.tpo.e_commerce.dto.CategoriaDto;
 import com.uade.tpo.e_commerce.service.CategoriaService;
-
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
