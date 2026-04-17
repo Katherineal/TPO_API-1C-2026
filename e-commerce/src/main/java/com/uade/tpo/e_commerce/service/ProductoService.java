@@ -12,6 +12,7 @@ import com.uade.tpo.e_commerce.dto.ProductoDto;
 import com.uade.tpo.e_commerce.model.Categoria;
 import com.uade.tpo.e_commerce.model.Producto;
 import com.uade.tpo.e_commerce.repository.ProductoRepository;
+import com.uade.tpo.e_commerce.exceptions.ResourceNotFoundException;
 
 import jakarta.transaction.Transactional;
 
@@ -32,11 +33,15 @@ public class ProductoService {
     }
 
     public ProductoDto getProductoById(Long id) {
-        Producto producto = productoRepository.findById(id).orElse(null);
+        Producto producto = productoRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Producto no encontrado con el id: " + id));
         return mapToDto(producto);
     }
 
     public void deleteProductoById(Long id) {
+        if (!productoRepository.existsById(id)) {
+            throw new ResourceNotFoundException("Producto no encontrado con el id: " + id);
+        }
         productoRepository.deleteById(id);
     }
 
@@ -47,24 +52,23 @@ public class ProductoService {
     }
 
     public ProductoDto updateProducto(Long id, ProductoDto productoDto) {
-        Producto existingProducto = productoRepository.findById(id).orElse(null);
-        if (existingProducto != null) {
-            existingProducto.setNombre(productoDto.getNombre());
-            existingProducto.setDescripcion(productoDto.getDescripcion());
-            existingProducto.setPrecio(productoDto.getPrecio());
-            existingProducto.setStock(productoDto.getStock());
-            
-            if (productoDto.getCategorias() != null) {
-                List<Categoria> categorias = productoDto.getCategorias().stream()
-                    .map(categoriaService::mapToEntity)
-                    .collect(Collectors.toList());
-                existingProducto.setCategorias(categorias);
-            }
-            
-            Producto updated = productoRepository.save(existingProducto);
-            return mapToDto(updated);
+        Producto existingProducto = productoRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Producto no encontrado con el id: " + id));
+        
+        existingProducto.setNombre(productoDto.getNombre());
+        existingProducto.setDescripcion(productoDto.getDescripcion());
+        existingProducto.setPrecio(productoDto.getPrecio());
+        existingProducto.setStock(productoDto.getStock());
+        
+        if (productoDto.getCategorias() != null) {
+            List<Categoria> categorias = productoDto.getCategorias().stream()
+                .map(categoriaService::mapToEntity)
+                .collect(Collectors.toList());
+            existingProducto.setCategorias(categorias);
         }
-        return null;
+        
+        Producto updated = productoRepository.save(existingProducto);
+        return mapToDto(updated);
     }
 
     public ProductoDto mapToDto(Producto producto) {
