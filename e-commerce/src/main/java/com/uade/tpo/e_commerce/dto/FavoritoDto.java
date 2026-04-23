@@ -1,8 +1,5 @@
 package com.uade.tpo.e_commerce.dto;
 
-import java.time.LocalDateTime;
-import java.util.List;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -12,11 +9,10 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class PedidoDto {
+public class FavoritoDto {
     private Long id;
     private Long usuarioId;
-    private String estado;
-    private Double total;
-    private LocalDateTime fecha;
-    private List<DetallePedidoDto> detalles;
+    private Long productoId;
+    private String productoNombre;
+    private Double productoPrecio;
 }
