@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -13,6 +14,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 @Configuration(proxyBeanMethods = false)
 @EnableWebSecurity
+@EnableMethodSecurity // Profe, esta anotación habilita el uso de @PreAuthorize en los controllers para control de acceso por rol a nivel de método.
 @RequiredArgsConstructor
 public class SecurityConfig {
 
@@ -28,13 +30,22 @@ public class SecurityConfig {
                 .requestMatchers("/h2-console/**").permitAll() // Permitimos el acceso a la consola de H2
                 
                 // Profe, acá configuramos las reglas de acceso por roles (Role-Based Access Control).
-                .requestMatchers(HttpMethod.GET, "/api/productos/**").permitAll()                .requestMatchers(HttpMethod.POST, "/api/productos/**").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.GET, "/api/productos/**").permitAll()
+                .requestMatchers(HttpMethod.POST, "/api/productos/**").hasRole("ADMIN")
                 .requestMatchers(HttpMethod.PUT, "/api/productos/**").hasRole("ADMIN")
                 .requestMatchers(HttpMethod.DELETE, "/api/productos/**").hasRole("ADMIN")
+
+                .requestMatchers(HttpMethod.GET, "/api/categorias/**").permitAll()
                 .requestMatchers(HttpMethod.POST, "/api/categorias/**").hasRole("ADMIN")
                 .requestMatchers(HttpMethod.PUT, "/api/categorias/**").hasRole("ADMIN")
                 .requestMatchers(HttpMethod.DELETE, "/api/categorias/**").hasRole("ADMIN")
-                
+
+                // Profe, los pedidos, favoritos y usuarios requieren autenticación.
+                // El control fino por rol se maneja con @PreAuthorize en cada controller.
+                .requestMatchers("/api/pedidos/**").authenticated()
+                .requestMatchers("/api/favoritos/**").authenticated()
+                .requestMatchers("/api/usuarios/**").authenticated()
+
                 .anyRequest().authenticated() // Profe, acá bloqueamos todo el resto si no hay token.
             )
             .headers(headers -> headers.frameOptions(frame -> frame.disable())) // Permitimos iframes para que H2 console funcione correctamente

@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.uade.tpo.e_commerce.dto.UsuarioDto;
+import com.uade.tpo.e_commerce.exceptions.ResourceNotFoundException;
 import com.uade.tpo.e_commerce.model.Usuario;
 import com.uade.tpo.e_commerce.repository.UsuarioRepository;
 
@@ -18,11 +19,24 @@ public class UsuarioService {
 
     @Autowired
     private UsuarioRepository usuarioRepository;
-    
+
     public List<UsuarioDto> getAllUsuarios() {
         return usuarioRepository.findAll().stream()
                 .map(this::mapToDto)
                 .collect(Collectors.toList());
+    }
+
+    public UsuarioDto getUsuarioById(Long id) {
+        Usuario usuario = usuarioRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Usuario no encontrado con id: " + id));
+        return mapToDto(usuario);
+    }
+
+    public void deleteUsuario(Long id) {
+        if (!usuarioRepository.existsById(id)) {
+            throw new ResourceNotFoundException("Usuario no encontrado con id: " + id);
+        }
+        usuarioRepository.deleteById(id);
     }
 
     public UsuarioDto mapToDto(Usuario usuario) {

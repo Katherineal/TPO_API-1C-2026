@@ -1,11 +1,10 @@
 package com.uade.tpo.e_commerce.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+
+import jakarta.persistence.*;
 import lombok.Data;
 
 @Data
@@ -17,8 +16,18 @@ public class Pedido {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @ManyToOne
+    @JoinColumn(name = "usuario_id", nullable = false)
+    private Usuario usuario;
+
+    @OneToMany(mappedBy = "pedido", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<DetallePedido> detalles = new ArrayList<>();
+
     @Column(nullable = false)
-    private String nombre;
-    
-    private String descripcion;
+    private Double total;
+
+    @Column(nullable = false)
+    private String estado; // "PENDIENTE", "CONFIRMADO", "CANCELADO"
+
+    private LocalDateTime fecha;
 }

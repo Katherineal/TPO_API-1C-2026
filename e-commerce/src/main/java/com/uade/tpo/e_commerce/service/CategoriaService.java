@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.uade.tpo.e_commerce.dto.CategoriaDto;
+import com.uade.tpo.e_commerce.exceptions.ResourceNotFoundException;
 import com.uade.tpo.e_commerce.model.Categoria;
 import com.uade.tpo.e_commerce.repository.CategoriaRepository;
 
@@ -18,16 +19,36 @@ public class CategoriaService {
 
     @Autowired
     private CategoriaRepository categoriaRepository;
-    
+
     public List<CategoriaDto> getAllCategorias() {
         return categoriaRepository.findAll().stream()
                 .map(this::mapToDto)
                 .collect(Collectors.toList());
     }
 
+    public CategoriaDto getCategoriaById(Long id) {
+        Categoria categoria = categoriaRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Categoría no encontrada con id: " + id));
+        return mapToDto(categoria);
+    }
+
     public CategoriaDto saveCategoria(CategoriaDto categoriaDto) {
         Categoria categoria = mapToEntity(categoriaDto);
         return mapToDto(categoriaRepository.save(categoria));
+    }
+
+    public CategoriaDto updateCategoria(Long id, CategoriaDto categoriaDto) {
+        Categoria categoria = categoriaRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Categoría no encontrada con id: " + id));
+        categoria.setNombre(categoriaDto.getNombre());
+        return mapToDto(categoriaRepository.save(categoria));
+    }
+
+    public void deleteCategoria(Long id) {
+        if (!categoriaRepository.existsById(id)) {
+            throw new ResourceNotFoundException("Categoría no encontrada con id: " + id);
+        }
+        categoriaRepository.deleteById(id);
     }
 
     public CategoriaDto mapToDto(Categoria categoria) {
