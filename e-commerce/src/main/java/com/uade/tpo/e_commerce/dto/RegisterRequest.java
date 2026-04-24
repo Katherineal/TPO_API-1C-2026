@@ -1,5 +1,6 @@
 package com.uade.tpo.e_commerce.dto;
 
+import com.uade.tpo.e_commerce.model.Role;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -13,4 +14,5 @@ public class RegisterRequest {
     private String nombre;
     private String email;
     private String password;
+    private Role role;
 }
