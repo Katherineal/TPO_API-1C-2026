@@ -16,66 +16,6 @@
 	<name>e-commerce</name>
 	<description>Demo project for Spring Boot</description>
 
-	<developers>
-        <developer>
-            <name>Katherine Alzamora</name>
-            <organization>UADE</organization>
-            <roles>
-                <role>Developer</role>
-            </roles>
-        </developer>
-    </developers>
-
-	<developers>
-        <developer>
-            <name>Julian Isnardo</name>
-            <organization>UADE</organization>
-            <roles>
-                <role>Developer</role>
-            </roles>
-        </developer>
-    </developers>
-
-	<developers>
-        <developer>
-            <name>Facundo Llano</name>
-            <organization>UADE</organization>
-            <roles>
-                <role>Developer</role>
-            </roles>
-        </developer>
-    </developers>
-
-	<developers>
-        <developer>
-            <name>Matias Diaz</name>
-            <organization>UADE</organization>
-            <roles>
-                <role>Developer</role>
-            </roles>
-        </developer>
-    </developers>
-
-	<developers>
-        <developer>
-            <name>Santiago Brandes</name>
-            <organization>UADE</organization>
-            <roles>
-                <role>Developer</role>
-            </roles>
-        </developer>
-    </developers>
-
-	<developers>
-        <developer>
-            <name>Maximo Varone</name>
-            <organization>UADE</organization>
-            <roles>
-                <role>Developer</role>
-            </roles>
-        </developer>
-    </developers>
-
 	<!-- Java -->
 	<properties>
 		<java.version>17</java.version>
