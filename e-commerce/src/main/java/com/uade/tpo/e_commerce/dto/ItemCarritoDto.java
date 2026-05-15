@@ -1,6 +1,5 @@
 package com.uade.tpo.e_commerce.dto;
 
-import com.uade.tpo.e_commerce.model.Role;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -10,10 +9,11 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class UsuarioDto {
+public class ItemCarritoDto {
     private Long id;
-    private String nombre;
-    private String apellido;
-    private String email;
-    private Role role;
+    private Long productoId;
+    private String productoNombre;
+    private Integer cantidad;
+    private Double precioUnitario;
+    private Double subtotal; // cantidad * precioUnitario
 }

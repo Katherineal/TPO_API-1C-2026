@@ -26,6 +26,8 @@ public class Producto {
     @Column(nullable = false)
     private Integer stock;
 
+    private String imagenUrl;
+
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
         name = "productos_categorias",
@@ -36,4 +38,7 @@ public class Producto {
 
     @OneToMany(mappedBy = "producto", cascade = CascadeType.ALL)
     private List<DetallePedido> detalles = new ArrayList<>();
+
+    @OneToMany(mappedBy = "producto", cascade = CascadeType.ALL)
+    private List<ItemCarrito> itemsCarrito = new ArrayList<>();
 }
