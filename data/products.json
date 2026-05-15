@@ -1,0 +1,42 @@
+[
+  {
+    "id": 1,
+    "title": "Samsung Galaxy S23 Ultra 5g 256 Gb Phantom Black 8 Gb Ram",
+    "price": 1200000,
+    "originalPrice": 1500000,
+    "installments": "Mismo precio en 6 cuotas de $200.000",
+    "shipping": "Envío gratis",
+    "image": "/samsung_galaxy.png",
+    "seller": "Mercado Libre Electrónica"
+  },
+  {
+    "id": 2,
+    "title": "Notebook Hp 15-fc0001la Amd Ryzen 5 7520u 8gb 512gb Ssd",
+    "price": 850000,
+    "originalPrice": null,
+    "installments": "Mismo precio en 3 cuotas de $283.333",
+    "shipping": "Envío gratis",
+    "image": "/hp_laptop.png",
+    "seller": "HP Oficial"
+  },
+  {
+    "id": 3,
+    "title": "Smart Tv 43 Pulgadas Fhd Samsung Un43t5300agczb",
+    "price": 320000,
+    "originalPrice": 400000,
+    "installments": "6 cuotas sin interés de $53.333",
+    "shipping": "Envío gratis",
+    "image": "/samsung_tv.png",
+    "seller": "Samsung Oficial"
+  },
+  {
+    "id": 4,
+    "title": "Auriculares Inalámbricos Sony Wh-ch520 Bluetooth Con Micrófono",
+    "price": 65000,
+    "originalPrice": 80000,
+    "installments": "3 cuotas sin interés de $21.666",
+    "shipping": "Envío gratis",
+    "image": "/sony_headphones.png",
+    "seller": "Sony Oficial"
+  }
+]
