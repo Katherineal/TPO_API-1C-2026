@@ -28,6 +28,7 @@ public class AuthenticationService {
         Role role = request.getRole() != null ? request.getRole() : Role.USER;
         var user = Usuario.builder()
                 .nombre(request.getNombre())
+                .apellido(request.getApellido())
                 .email(request.getEmail())
                 .password(passwordEncoder.encode(request.getPassword()))
                 .role(role)

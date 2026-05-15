@@ -1,0 +1,63 @@
+.app-container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.navbar {
+  background-color: var(--surface);
+  box-shadow: var(--shadow-sm);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.nav-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 4rem;
+}
+
+.brand {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--primary);
+  letter-spacing: -0.025em;
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  font-weight: 500;
+}
+
+.nav-links a:not(.btn) {
+  color: var(--text-muted);
+  transition: color 0.2s;
+}
+
+.nav-links a:not(.btn):hover {
+  color: var(--primary);
+}
+
+.main-content {
+  flex: 1;
+  padding-top: 2rem;
+  padding-bottom: 2rem;
+}
+
+/* Page specific layouts */
+.page-header {
+  margin-bottom: 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.page-title {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--text-main);
+}

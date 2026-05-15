@@ -11,6 +11,12 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
+import java.util.Arrays;
+import java.util.List;
 
 @Configuration(proxyBeanMethods = false)
 @EnableWebSecurity
@@ -24,6 +30,7 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
+            .cors(cors -> cors.configurationSource(corsConfigurationSource())) // Integración de CORS en el filtro de seguridad
             .csrf(csrf -> csrf.disable()) // Profe, acá desactivamos CSRF porque JWT es seguro contra esto.
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/api/auth/**").permitAll() // Profe, acá permitimos que cualquiera se registre o loguee.
@@ -31,9 +38,9 @@ public class SecurityConfig {
                 
                 // Profe, acá configuramos las reglas de acceso por roles (Role-Based Access Control).
                 .requestMatchers(HttpMethod.GET, "/api/productos/**").permitAll()
-                .requestMatchers(HttpMethod.POST, "/api/productos/**").hasRole("ADMIN")
-                .requestMatchers(HttpMethod.PUT, "/api/productos/**").hasRole("ADMIN")
-                .requestMatchers(HttpMethod.DELETE, "/api/productos/**").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.POST, "/api/productos/**").hasAnyRole("ADMIN", "USER")
+                .requestMatchers(HttpMethod.PUT, "/api/productos/**").hasAnyRole("ADMIN", "USER")
+                .requestMatchers(HttpMethod.DELETE, "/api/productos/**").hasAnyRole("ADMIN", "USER")
 
                 .requestMatchers(HttpMethod.GET, "/api/categorias/**").permitAll()
                 .requestMatchers(HttpMethod.POST, "/api/categorias/**").hasRole("ADMIN")
@@ -54,5 +61,27 @@ public class SecurityConfig {
             .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
+    }
+
+    /**
+     * Configuración de CORS para permitir peticiones seguras desde el Frontend (React).
+     * Evita bloqueos de recursos de origen cruzado en los navegadores.
+     */
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        // Permitimos los orígenes comunes de desarrollo frontend (Vite y CRA) tanto con localhost como con 127.0.0.1
+        configuration.setAllowedOrigins(List.of("http://localhost:5173", "http://localhost:3000", "http://127.0.0.1:5173", "http://127.0.0.1:3000"));
+        // Habilitamos los métodos HTTP requeridos para REST
+        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        // Permitimos el paso de cualquier header
+        configuration.setAllowedHeaders(List.of("*"));
+        // Permitimos el envío de credenciales si fuesen necesarias (cookies, auth headers)
+        configuration.setAllowCredentials(true);
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        // Aplicamos esta política de CORS a todos nuestros endpoints /api/**
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
     }
 }

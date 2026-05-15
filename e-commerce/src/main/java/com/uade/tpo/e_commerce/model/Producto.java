@@ -26,6 +26,7 @@ public class Producto {
     @Column(nullable = false)
     private Integer stock;
 
+    @Column(length = 2048)
     private String imagenUrl;
 
     @ManyToMany(fetch = FetchType.LAZY)
