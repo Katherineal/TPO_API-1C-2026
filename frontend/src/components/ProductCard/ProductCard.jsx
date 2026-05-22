@@ -1,8 +1,14 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useCart } from "../../context/CartContext";
 
 import "./ProductCard.css";
 
 function ProductCard({ product }) {
+
+    const { addToCart } = useCart();
+
+    const navigate = useNavigate();
 
     const [imageLoaded, setImageLoaded] =
         useState(false);
@@ -10,9 +16,16 @@ function ProductCard({ product }) {
     const [isAdding, setIsAdding] =
         useState(false);
 
+    // Verifica si el usuario está logueado
+    const token =
+        localStorage.getItem("token");
+
+    // Usa la imagen del backend
     const image =
-        product.imagen_url ||
-        "https://placehold.co/600x600";
+        product.imagen_url &&
+        product.imagen_url.trim() !== ""
+            ? product.imagen_url
+            : "https://placehold.co/600x600?text=Producto";
 
     const isOutOfStock =
         product.stock === 0;
@@ -23,7 +36,21 @@ function ProductCard({ product }) {
 
     const handleAddToCart = () => {
 
+        // Si no está logueado
+        if (!token) {
+
+            alert(
+                "Debes iniciar sesión para agregar productos al carrito."
+            );
+
+            navigate("/login");
+
+            return;
+        }
+
         if (isOutOfStock) return;
+
+        addToCart(product);
 
         setIsAdding(true);
 
@@ -81,6 +108,10 @@ function ProductCard({ product }) {
                                 true
                             )
                         }
+                        onError={(e) => {
+                            e.target.src =
+                                "https://placehold.co/600x600?text=Sin+Imagen";
+                        }}
                     />
 
                 </div>
@@ -220,12 +251,19 @@ function ProductCard({ product }) {
 
                     </span>
 
-                    <button
-    className="add-to-cart-btn"
-    onClick={() => onAddToCart(product)}
->
-    Agregar al carrito
-</button>
+                    <span
+                        className="
+                        btn-text
+                        "
+                    >
+
+                        {
+                            isAdding
+                            ? "Agregado"
+                            : "Agregar al carrito"
+                        }
+
+                    </span>
 
                 </button>
 
