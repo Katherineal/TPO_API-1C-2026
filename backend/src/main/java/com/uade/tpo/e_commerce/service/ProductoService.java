@@ -59,6 +59,7 @@ public class ProductoService {
         existingProducto.setDescripcion(productoDto.getDescripcion());
         existingProducto.setPrecio(productoDto.getPrecio());
         existingProducto.setStock(productoDto.getStock());
+        existingProducto.setImagenUrl(productoDto.getImagenUrl());
         
         if (productoDto.getCategorias() != null) {
             List<Categoria> categorias = productoDto.getCategorias().stream()
@@ -86,6 +87,7 @@ public class ProductoService {
                 .descripcion(producto.getDescripcion())
                 .precio(producto.getPrecio())
                 .stock(producto.getStock())
+                .imagenUrl(producto.getImagenUrl())
                 .categorias(categoriasDto)
                 .build();
     }
@@ -98,6 +100,7 @@ public class ProductoService {
         producto.setDescripcion(productoDto.getDescripcion());
         producto.setPrecio(productoDto.getPrecio());
         producto.setStock(productoDto.getStock());
+        producto.setImagenUrl(productoDto.getImagenUrl());
         
         if (productoDto.getCategorias() != null) {
             List<Categoria> categorias = productoDto.getCategorias().stream()
