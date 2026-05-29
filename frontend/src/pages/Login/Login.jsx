@@ -32,7 +32,7 @@ function Login({ onLogin }) {
     }
     
     if (!formData.password) {
-      newErrors.password = 'La contrasena es requerida';
+      newErrors.password = 'La contraseña es requerida';
     } else if (formData.password.length < 6) {
       newErrors.password = 'Minimo 6 caracteres';
     }
@@ -61,7 +61,6 @@ function Login({ onLogin }) {
             }
         );
 
-        console.log(response.data);
 
         localStorage.setItem(
             "token",
@@ -122,7 +121,21 @@ function Login({ onLogin }) {
               <div className="form-group">
                 <label htmlFor="email">Email</label>
                 <div className="input-wrapper">
-                  <span className="input-icon">📧</span>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="20"
+                    height="20"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="1.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    className="input-icon"
+                  >
+                    <rect x="2" y="4" width="20" height="16" rx="2"/>
+                    <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/>
+                  </svg>
                   <input
                     type="email"
                     id="email"
@@ -138,16 +151,30 @@ function Login({ onLogin }) {
               </div>
 
               <div className="form-group">
-                <label htmlFor="password">Contrasena</label>
+                <label htmlFor="password">Contraseña</label>
                 <div className="input-wrapper">
-                  <span className="input-icon">🔒</span>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="20"
+                    height="20"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="1.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    className="input-icon"
+                  >
+                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+                    <path d="M7 11V7a4 4 0 0 1 4-4h2a4 4 0 0 1 4 4v4"/>
+                  </svg>
                   <input
                     type={showPassword ? 'text' : 'password'}
                     id="password"
                     name="password"
                     value={formData.password}
                     onChange={handleChange}
-                    placeholder="Tu contrasena"
+                    placeholder="Tu contraseña"
                     className={errors.password ? 'error' : ''}
                     autoComplete="current-password"
                   />
@@ -155,9 +182,20 @@ function Login({ onLogin }) {
                     type="button"
                     className="toggle-password"
                     onClick={() => setShowPassword(!showPassword)}
-                    aria-label={showPassword ? 'Ocultar contrasena' : 'Mostrar contrasena'}
+                    aria-label={showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'}
                   >
-                    {showPassword ? '🙈' : '👁️'}
+                    {showPassword ? (
+                      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                        <circle cx="12" cy="12" r="3"/>
+                        <line x1="1" y1="1" x2="23" y2="23"/>
+                      </svg>
+                    ) : (
+                      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                        <circle cx="12" cy="12" r="3"/>
+                      </svg>
+                    )}
                   </button>
                 </div>
                 {errors.password && <span className="error-message">{errors.password}</span>}
@@ -168,7 +206,7 @@ function Login({ onLogin }) {
                   <input type="checkbox" />
                   <span>Recordarme</span>
                 </label>
-                <a href="/forgot-password" className="forgot-link">Olvidaste tu contrasena?</a>
+                <a href="/forgot-password" className="forgot-link">Olvidaste tu contraseña?</a>
               </div>
 
               <button 
@@ -183,21 +221,6 @@ function Login({ onLogin }) {
                 )}
               </button>
             </form>
-
-            <div className="auth-divider">
-              <span>o continua con</span>
-            </div>
-
-            <div className="social-buttons">
-              <button className="btn-social google">
-                <span>G</span>
-                Google
-              </button>
-              <button className="btn-social apple">
-                <span></span>
-                Apple
-              </button>
-            </div>
 
             <p className="auth-footer">
               No tienes una cuenta? <Link to="/register">Registrate</Link>

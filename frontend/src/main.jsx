@@ -5,14 +5,29 @@ import "./index.css";
 import App from "./App";
 
 import { BrowserRouter } from "react-router-dom";
-import { CartProvider } from "./context/CartContext";
 
-ReactDOM.createRoot(document.getElementById("root")).render(
+import { CartProvider } from "./context/CartContext";
+import { FavoriteProvider } from "./context/FavoriteContext";
+
+ReactDOM.createRoot(
+    document.getElementById("root")
+).render(
+
     <React.StrictMode>
+
         <BrowserRouter>
+
             <CartProvider>
-                <App />
+
+                <FavoriteProvider>
+
+                    <App />
+
+                </FavoriteProvider>
+
             </CartProvider>
+
         </BrowserRouter>
+
     </React.StrictMode>
 );

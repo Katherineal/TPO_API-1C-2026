@@ -3,10 +3,8 @@ import { useState, useEffect } from "react";
 import productService
     from "../../services/productService";
 
-import AdminLayout
-    from "../../layouts/AdminLayout";
-
 import "./AdminDashboard.css";
+import MainLayout from "../../layouts/MainLayout";
 
 function AdminDashboard() {
 
@@ -82,16 +80,22 @@ function AdminDashboard() {
     };
 
     return (
-
-        <AdminLayout>
-
+            <MainLayout>
             <div className="admin-page">
 
-                <h1>
-                    Panel Administrador
-                </h1>
+                <div className="admin-header">
 
-                <table className="admin-table">
+                    <h1>
+                        Panel Administrador
+                    </h1>
+
+                    <p>
+                        Gestiona productos y stock
+                    </p>
+
+                </div>
+
+                <table className="products-table">
 
                     <thead>
 
@@ -105,6 +109,8 @@ function AdminDashboard() {
 
                             <th>Stock</th>
 
+                            <th>Estado</th>
+
                             <th>Acción</th>
 
                         </tr>
@@ -114,84 +120,115 @@ function AdminDashboard() {
                     <tbody>
 
                         {
-                            products.map((product) => (
+                            products.map((product) => {
+                                let stockStatus = 'in-stock';
+                                if (product.stock === 0) {
+                                    stockStatus = 'out-of-stock';
+                                } else if (product.stock <= 5) {
+                                    stockStatus = 'low-stock';
+                                }
 
-                                <tr
-                                    key={product.id}
-                                >
+                                return (
+                                    <tr
+                                        key={product.id}
+                                    >
 
-                                    <td>
-                                        {product.id}
-                                    </td>
+                                        <td className="id-cell">
+                                            {product.id}
+                                        </td>
 
-                                    <td>
-                                        {product.nombre}
-                                    </td>
+                                        <td className="product-cell">
+                                            <img src={product.imagen_url} alt={product.nombre} />
+                                            <span>{product.nombre}</span>
+                                        </td>
 
-                                    <td>
-                                        $
-                                        {product.precio}
-                                    </td>
+                                        <td className="price-cell" data-label="Precio">
+                                            ${product.precio}
+                                        </td>
 
-                                    <td>
+                                        <td className="stock-cell" data-label="Stock">
 
-                                        {
-                                            editingId ===
-                                            product.id ? (
+                                            {
+                                                editingId ===
+                                                product.id ? (
 
-                                                <input
-                                                    type="number"
-                                                    value={stock}
-                                                    onChange={(e) =>
-                                                        setStock(
-                                                            e.target.value
-                                                        )
-                                                    }
-                                                />
+                                                    <input
+                                                        type="number"
+                                                        className="stock-input"
+                                                        value={stock}
+                                                        onChange={(e) =>
+                                                            setStock(
+                                                                e.target.value
+                                                            )
+                                                        }
+                                                    />
 
-                                            ) : (
+                                                ) : (
 
-                                                product.stock
-                                            )
-                                        }
+                                                    <span className="stock-value">
+                                                        {product.stock}
+                                                    </span>
+                                                )
+                                            }
 
-                                    </td>
+                                        </td>
 
-                                    <td>
+                                        <td data-label="Estado" className="no-label">
+                                            <span className={`status-badge ${stockStatus}`}>
+                                                {stockStatus === 'in-stock' && 'En stock'}
+                                                {stockStatus === 'low-stock' && 'Stock bajo'}
+                                                {stockStatus === 'out-of-stock' && 'Agotado'}
+                                            </span>
+                                        </td>
 
-                                        {
-                                            editingId ===
-                                            product.id ? (
+                                        <td className="action-buttons no-label" data-label="Acciones">
 
-                                                <button
-                                                    onClick={() =>
-                                                        handleSave(
-                                                            product.id
-                                                        )
-                                                    }
-                                                >
-                                                    Guardar
-                                                </button>
+                                            {
+                                                editingId ===
+                                                product.id ? (
 
-                                            ) : (
+                                                    <>
+                                                        <button
+                                                            className="save-btn"
+                                                            onClick={() =>
+                                                                handleSave(
+                                                                    product.id
+                                                                )
+                                                            }
+                                                        >
+                                                            Guardar
+                                                        </button>
+                                                        <button
+                                                            className="cancel-btn"
+                                                            onClick={() =>
+                                                                setEditingId(null)
+                                                            }
+                                                        >
+                                                            Cancelar
+                                                        </button>
+                                                    </>
 
-                                                <button
-                                                    onClick={() =>
-                                                        handleEdit(
-                                                            product
-                                                        )
-                                                    }
-                                                >
-                                                    Editar
-                                                </button>
+                                                ) : (
 
-                                            )
-                                        }
+                                                    <button
+                                                        className="edit-btn"
+                                                        onClick={() =>
+                                                            handleEdit(
+                                                                product
+                                                            )
+                                                        }
+                                                    >
+                                                        Editar
+                                                    </button>
 
-                                    </td>
+                                                )
+                                            }
 
-                                </tr>
-                            ))
+                                        </td>
+
+                                    </tr>
+                                );
+                            })
                         }
 
                     </tbody>
@@ -199,8 +236,7 @@ function AdminDashboard() {
                 </table>
 
             </div>
-
-        </AdminLayout>
+            </MainLayout>
     );
 }
 

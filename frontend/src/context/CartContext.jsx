@@ -8,6 +8,19 @@ export function CartProvider({ children }) {
 
     const addToCart = (product) => {
 
+        const token =
+            localStorage.getItem("token");
+
+        // Solo permite agregar si está logueado
+        if (!token) {
+
+            alert(
+                "Debes iniciar sesión para agregar productos al carrito"
+            );
+
+            return;
+        }
+
         const existingProduct =
             cartItems.find(
                 item => item.id === product.id
@@ -56,6 +69,25 @@ export function CartProvider({ children }) {
         setCartItems([]);
     };
 
+    const updateQuantity = (
+        id,
+        newQuantity
+    ) => {
+
+        const updatedCart =
+            cartItems.map(item =>
+
+                item.id === id
+                    ? {
+                        ...item,
+                        quantity: newQuantity
+                    }
+                    : item
+            );
+
+        setCartItems(updatedCart);
+    };
+
     const cartTotal =
         cartItems.reduce(
             (total, item) =>
@@ -75,12 +107,15 @@ export function CartProvider({ children }) {
 
         <CartContext.Provider
             value={{
+                items: cartItems,
                 cartItems,
                 addToCart,
                 removeFromCart,
                 clearCart,
+                updateQuantity,
                 cartTotal,
-                cartCount
+                cartCount,
+                loading: false
             }}
         >
 

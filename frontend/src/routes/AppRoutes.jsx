@@ -6,6 +6,8 @@ import Productos from "../pages/Productos/Productos";
 import AdminDashboard from "../pages/Admin/AdminDashboard";
 import Home from "../pages/Home/Home";
 import Carrito from "../pages/Carrito/Carrito";
+import Favoritos from "../pages/Favoritos/Favoritos";
+import ProductDetail from "../pages/Productos/[id]/ProductDetail";
 
 function AppRoutes() {
     return (
@@ -21,6 +23,11 @@ function AppRoutes() {
             <Route path="/admin" element={<AdminDashboard />} />
 
             <Route path="/carrito" element={<Carrito />} />
+
+            <Route path="/favoritos" element={<Favoritos />} />
+
+            <Route path="/productos/:id" element={<ProductDetail />} />
+
         </Routes>
     );
 }

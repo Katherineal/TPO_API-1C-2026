@@ -1,12 +1,19 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
+
 import { useCart } from "../../context/CartContext";
+import { useFavorite } from "../../context/FavoriteContext";
 
 import "./ProductCard.css";
 
 function ProductCard({ product }) {
 
     const { addToCart } = useCart();
+
+    const {
+        addToFavorite,
+        isFavorite
+    } = useFavorite();
 
     const navigate = useNavigate();
 
@@ -16,11 +23,12 @@ function ProductCard({ product }) {
     const [isAdding, setIsAdding] =
         useState(false);
 
-    // Verifica si el usuario está logueado
     const token =
         localStorage.getItem("token");
 
-    // Usa la imagen del backend
+    const favorite =
+        isFavorite(product.id);
+
     const image =
         product.imagen_url &&
         product.imagen_url.trim() !== ""
@@ -34,9 +42,24 @@ function ProductCard({ product }) {
         product.stock > 0 &&
         product.stock <= 5;
 
+    const handleToggleFavorite = () => {
+
+        if (!token) {
+
+            alert(
+                "Debes iniciar sesión para agregar favoritos."
+            );
+
+            navigate("/login");
+
+            return;
+        }
+
+        addToFavorite(product);
+    };
+
     const handleAddToCart = () => {
 
-        // Si no está logueado
         if (!token) {
 
             alert(
@@ -86,35 +109,46 @@ function ProductCard({ product }) {
                 "
             >
 
-                <div
-                    className={`
-                        product-image-wrapper
-                        ${
-                            imageLoaded
-                            ? "loaded"
-                            : ""
-                        }
-                    `}
+                <Link
+                    to={`/productos/${product.id}`}
+                    className="product-image-link"
                 >
 
-                    <img
-                        src={image}
-                        alt={product.nombre}
-                        className="
-                        product-image
-                        "
-                        onLoad={() =>
-                            setImageLoaded(
-                                true
-                            )
-                        }
-                        onError={(e) => {
-                            e.target.src =
-                                "https://placehold.co/600x600?text=Sin+Imagen";
-                        }}
-                    />
+                    <div
+                        className={`
+                            product-image-wrapper
+                            ${
+                                imageLoaded
+                                    ? "loaded"
+                                    : ""
+                            }
+                        `}
+                    >
 
-                </div>
+                        <img
+                            src={image}
+                            alt={product.nombre}
+                            className="
+                            product-image
+                            "
+                            onLoad={() =>
+                                setImageLoaded(true)
+                            }
+                            onError={(e) => {
+
+                                console.log(
+                                    "Error cargando imagen:",
+                                    image
+                                );
+
+                                e.target.src =
+                                    "https://placehold.co/600x600?text=Sin+Imagen";
+                            }}
+                        />
+
+                    </div>
+
+                </Link>
 
                 {
                     isOutOfStock && (
@@ -141,15 +175,22 @@ function ProductCard({ product }) {
                 "
             >
 
-                <h3
-                    className="
-                    product-name
-                    "
+                <Link
+                    to={`/productos/${product.id}`}
+                    className="product-name-link"
                 >
 
-                    {product.nombre}
+                    <h3
+                        className="
+                        product-name
+                        "
+                    >
 
-                </h3>
+                        {product.nombre}
+
+                    </h3>
+
+                </Link>
 
                 <p
                     className="
@@ -180,92 +221,136 @@ function ProductCard({ product }) {
 
                 </div>
 
-                <div
-                    className="
-                    product-stock
-                    "
-                >
+                <div className="product-stock">
 
                     <span
                         className={`
                             stock-indicator
                             ${
                                 isOutOfStock
-                                ? "out"
-                                : isLowStock
-                                ? "low"
-                                : "available"
+                                    ? "out"
+                                    : isLowStock
+                                    ? "low"
+                                    : "available"
                             }
                         `}
                     />
 
-                    <span
-                        className="
-                        stock-text
-                        "
-                    >
+                    <span className="stock-text">
 
                         {
                             isOutOfStock
-                            ? "Sin stock"
-                            : `${product.stock} disponibles`
+                                ? "Sin stock"
+                                : `${product.stock} disponibles`
                         }
 
                     </span>
 
                 </div>
 
-                <button
-                    className={`
-                        add-to-cart-btn
-                        ${
-                            isAdding
-                            ? "adding"
-                            : ""
-                        }
-                        ${
-                            isOutOfStock
-                            ? "disabled"
-                            : ""
-                        }
-                    `}
-                    disabled={
-                        isOutOfStock
-                    }
-                    onClick={
-                        handleAddToCart
-                    }
+                <div
+                    className="
+                    product-actions
+                    "
                 >
 
-                    <span
-                        className="
-                        btn-icon
-                        "
+                    <button
+                        className={`
+                            add-to-cart-btn
+                            ${
+                                isAdding
+                                    ? "adding"
+                                    : ""
+                            }
+                            ${
+                                isOutOfStock
+                                    ? "disabled"
+                                    : ""
+                            }
+                        `}
+                        disabled={
+                            isOutOfStock
+                        }
+                        onClick={
+                            handleAddToCart
+                        }
                     >
 
-                        {
-                            isAdding
-                            ? "✓"
-                            : "🛒"
+                        <span
+                            className="
+                            btn-icon
+                            "
+                        >
+
+                            {
+                                isAdding
+                                    ? "✓"
+                                    : ""
+                            }
+
+                        </span>
+
+                        <span
+                            className="
+                            btn-text
+                            "
+                        >
+
+                            {
+                                isAdding
+                                    ? "Agregado"
+                                    : "Agregar al carrito"
+                            }
+
+                        </span>
+
+                    </button>
+
+                    <button
+                        className={`
+                            favorite-btn
+                            ${
+                                favorite
+                                    ? "active"
+                                    : ""
+                            }
+                        `}
+                        onClick={
+                            handleToggleFavorite
                         }
-
-                    </span>
-
-                    <span
-                        className="
-                        btn-text
-                        "
+                        title={
+                            favorite
+                                ? "Quitar de favoritos"
+                                : "Agregar a favoritos"
+                        }
+                        aria-label={
+                            favorite
+                                ? "Quitar de favoritos"
+                                : "Agregar a favoritos"
+                        }
                     >
 
-                        {
-                            isAdding
-                            ? "Agregado"
-                            : "Agregar al carrito"
-                        }
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="20"
+                            height="20"
+                            viewBox="0 0 24 24"
+                            fill={
+                                favorite
+                                    ? "currentColor"
+                                    : "none"
+                            }
+                            stroke="currentColor"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                        >
+                            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
+                        </svg>
 
-                    </span>
+                    </button>
 
-                </button>
+                </div>
 
             </div>
 

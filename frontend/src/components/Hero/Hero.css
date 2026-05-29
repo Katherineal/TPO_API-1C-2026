@@ -1,0 +1,260 @@
+/* ===== VARIABLES ===== */
+
+:root {
+    --primary-color: #000;
+    --secondary-color: #666;
+    --text-color: #1a1a1a;
+    --border-color: #e5e5e5;
+    --bg-color: #ffffff;
+    --hover-color: #f0f0f0;
+  }
+  
+  /* ===== HERO SECTION ===== */
+  
+  .hero {
+    width: 100%;
+    padding: 2rem 1rem;
+    border-bottom: 1px solid var(--border-color);
+    background-color: #f5f5f5;
+  }
+  
+  /* ===== HERO CONTAINER ===== */
+  
+  .hero-container {
+    max-width: 1920px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 4rem;
+  }
+  
+  /* ===== HERO CONTENT ===== */
+  
+  .hero-content {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2rem;
+    align-items: center;
+  }
+  
+  .hero-text {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+  
+  .hero-title {
+    font-size: 2rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: -0.5px;
+    color: var(--text-color);
+    line-height: 1.2;
+  }
+  
+  .hero-subtitle {
+    font-size: 1rem;
+    color: var(--secondary-color);
+    line-height: 1.6;
+  }
+  
+  .hero-buttons {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+  
+  /* ===== BUTTONS ===== */
+  
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.875rem 1.75rem;
+    border-radius: 4px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.95rem;
+    border: 2px solid transparent;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  
+  .btn-primary {
+    background-color: var(--primary-color);
+    color: var(--bg-color);
+    border-color: var(--primary-color);
+  }
+  
+  .btn-primary:hover {
+    background-color: var(--bg-color);
+    color: var(--primary-color);
+    border-color: var(--primary-color);
+  }
+  
+  .btn-secondary {
+    background-color: transparent;
+    color: var(--text-color);
+    border-color: var(--text-color);
+  }
+  
+  .btn-secondary:hover {
+    background-color: var(--text-color);
+    color: var(--bg-color);
+  }
+  
+  /* ===== HERO IMAGE ===== */
+  
+  .hero-image {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 300px;
+    overflow: hidden;
+    border-radius: 8px;
+    background-color: var(--hover-color);
+  }
+  
+  .hero-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+  }
+  
+  /* ===== HERO FEATURES ===== */
+  
+  .hero-features {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--border-color);
+  }
+  
+  .feature {
+    display: flex;
+    gap: 1rem;
+    align-items: flex-start;
+  }
+  
+  .feature-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border: 2px solid var(--primary-color);
+    border-radius: 50%;
+    flex-shrink: 0;
+    font-weight: 800;
+    font-size: 0.875rem;
+    color: var(--primary-color);
+  }
+  
+  .feature-title {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--text-color);
+    margin-bottom: 0.25rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  
+  .feature-text {
+    font-size: 0.875rem;
+    color: var(--secondary-color);
+    line-height: 1.5;
+  }
+  
+  /* ===== TABLET STYLES ===== */
+  
+  @media (min-width: 768px) {
+    .hero {
+      padding: 3rem 2rem;
+    }
+  
+    .hero-title {
+      font-size: 2.5rem;
+    }
+  
+    .hero-subtitle {
+      font-size: 1.125rem;
+      max-width: 500px;
+    }
+  
+    .hero-content {
+      grid-template-columns: 1fr 1fr;
+      gap: 3rem;
+    }
+  
+    .hero-image {
+      height: 400px;
+    }
+  
+    .hero-features {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 2rem;
+    }
+  }
+  
+  /* ===== DESKTOP STYLES ===== */
+  
+  @media (min-width: 1024px) {
+    .hero {
+      padding: 4rem 3rem;
+    }
+  
+    .hero-title {
+      font-size: 3rem;
+    }
+  
+    .hero-subtitle {
+      font-size: 1.25rem;
+      max-width: 600px;
+    }
+  
+    .hero-buttons {
+      gap: 1.5rem;
+    }
+  
+    .btn {
+      padding: 1rem 2rem;
+      font-size: 1rem;
+    }
+  
+    .hero-image {
+      height: 500px;
+    }
+  
+    .hero-features {
+      grid-template-columns: repeat(4, 1fr);
+      gap: 2rem;
+    }
+  
+    .feature {
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+  
+    .feature-icon {
+      width: 40px;
+      height: 40px;
+      font-size: 1rem;
+      margin: 0 auto;
+    }
+  
+    .feature-title {
+      text-align: center;
+      font-size: 0.95rem;
+    }
+  
+    .feature-text {
+      text-align: center;
+      font-size: 0.85rem;
+    }
+  }
+  

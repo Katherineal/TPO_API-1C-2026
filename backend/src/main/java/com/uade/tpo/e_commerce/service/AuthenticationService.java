@@ -23,36 +23,43 @@ public class AuthenticationService {
     private final AuthenticationManager authenticationManager;
 
     public AuthenticationResponse register(RegisterRequest request) {
-        // Profe, acá creamos el usuario con la contraseña encriptada.
-        // Si no se manda un rol en el request, se asigna USER por defecto.
-        Role role = request.getRole() != null ? request.getRole() : Role.USER;
+
         var user = Usuario.builder()
                 .nombre(request.getNombre())
                 .email(request.getEmail())
                 .password(passwordEncoder.encode(request.getPassword()))
-                .role(role)
+                .role(Role.USER)
                 .build();
+
         repository.save(user);
+
         var jwtToken = jwtService.generateToken(user);
+
         return AuthenticationResponse.builder()
                 .token(jwtToken)
+                .role(user.getRole().name())
+                .email(user.getEmail())
                 .build();
     }
 
     public AuthenticationResponse authenticate(AuthenticationRequest request) {
-        // Profe, acá validamos las credenciales usando el AuthenticationManager de Spring.
+
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         request.getEmail(),
                         request.getPassword()
                 )
         );
+
         var user = repository.findByEmail(request.getEmail())
                 .orElseThrow();
-        // Profe, si todo sale bien generamos el token JWT para el usuario logueado.
+
         var jwtToken = jwtService.generateToken(user);
+
         return AuthenticationResponse.builder()
                 .token(jwtToken)
+                .role(user.getRole().name())
+                .email(user.getEmail())
                 .build();
     }
 }

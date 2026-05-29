@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import MainLayout from '../../layouts/MainLayout';
 import '../Login/Login.css';
-import './Register.css';
 import API from "../../services/api";
 
 function Register() {
@@ -11,6 +10,7 @@ function Register() {
 
   const [formData, setFormData] = useState({
     name: '',
+    apellido: '',
     email: '',
     password: '',
     confirmPassword: ''
@@ -59,6 +59,12 @@ function Register() {
         'Minimo 2 caracteres';
     }
 
+    if (!formData.apellido) {
+      newErrors.apellido = 'El apellido es requerido';
+  } else if (formData.apellido.length < 2) {
+      newErrors.apellido = 'Minimo 2 caracteres';
+  }
+
     if (!formData.email) {
 
       newErrors.email =
@@ -77,7 +83,7 @@ function Register() {
     if (!formData.password) {
 
       newErrors.password =
-        'La contrasena es requerida';
+        'La contraseña es requerida';
 
     } else if (
       formData.password.length < 6
@@ -92,7 +98,7 @@ function Register() {
     ) {
 
       newErrors.confirmPassword =
-        'Confirma tu contrasena';
+        'Confirma tu contraseña';
 
     } else if (
       formData.password !==
@@ -100,7 +106,7 @@ function Register() {
     ) {
 
       newErrors.confirmPassword =
-        'Las contrasenas no coinciden';
+        'Las contraseñas no coinciden';
     }
 
     if (!acceptTerms) {
@@ -184,6 +190,7 @@ function Register() {
               "/api/auth/register",
               {
                   nombre: formData.name,
+                  apellido: formData.apellido,
                   email: formData.email,
                   password: formData.password
               }
@@ -258,15 +265,25 @@ function Register() {
               <div className="form-group">
 
                 <label htmlFor="name">
-                  Nombre completo
+                  Nombre
                 </label>
 
                 <div className="input-wrapper">
-
-                  <span className="input-icon">
-                    👤
-                  </span>
-
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="20"
+                    height="20"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="1.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    className="input-icon"
+                  >
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                    <circle cx="12" cy="7" r="4"/>
+                  </svg>
                   <input
                     type="text"
                     id="name"
@@ -280,7 +297,6 @@ function Register() {
                         : ''
                     }
                   />
-
                 </div>
 
                 {
@@ -294,6 +310,52 @@ function Register() {
               </div>
 
               <div className="form-group">
+                <label htmlFor="apellido">
+                    Apellido
+                </label>
+
+                <div className="input-wrapper">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="20"
+                      height="20"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="1.5"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      className="input-icon"
+                    >
+                      <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                      <circle cx="12" cy="7" r="4"/>
+                    </svg>
+
+                    <input
+                        type="text"
+                        id="apellido"
+                        name="apellido"
+                        value={formData.apellido}
+                        onChange={handleChange}
+                        placeholder="Tu apellido"
+                        className={
+                            errors.apellido
+                                ? 'error'
+                                : ''
+                        }
+                    />
+                </div>
+
+                {
+                    errors.apellido && (
+                        <span className="error-message">
+                            {errors.apellido}
+                        </span>
+                    )
+                }
+            </div>
+
+              <div className="form-group">
 
                 <label htmlFor="email">
                   Email
@@ -301,9 +363,21 @@ function Register() {
 
                 <div className="input-wrapper">
 
-                  <span className="input-icon">
-                    📧
-                  </span>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="20"
+                    height="20"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="1.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    className="input-icon"
+                  >
+                    <rect x="2" y="4" width="20" height="16" rx="2"/>
+                    <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/>
+                  </svg>
 
                   <input
                     type="email"
@@ -334,14 +408,26 @@ function Register() {
               <div className="form-group">
 
                 <label htmlFor="password">
-                  Contrasena
+                  Contraseña
                 </label>
 
                 <div className="input-wrapper">
 
-                  <span className="input-icon">
-                    🔒
-                  </span>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="20"
+                    height="20"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="1.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    className="input-icon"
+                  >
+                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+                    <path d="M7 11V7a4 4 0 0 1 4-4h2a4 4 0 0 1 4 4v4"/>
+                  </svg>
 
                   <input
                     type={
@@ -353,7 +439,7 @@ function Register() {
                     name="password"
                     value={formData.password}
                     onChange={handleChange}
-                    placeholder="Crea una contrasena"
+                    placeholder="Crea una contraseña"
                     className={
                       errors.password
                         ? 'error'
@@ -373,8 +459,19 @@ function Register() {
 
                     {
                       showPassword
-                        ? '🙈'
-                        : '👁️'
+                        ? (
+                          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                            <circle cx="12" cy="12" r="3"/>
+                            <line x1="1" y1="1" x2="23" y2="23"/>
+                          </svg>
+                        )
+                        : (
+                          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                            <circle cx="12" cy="12" r="3"/>
+                          </svg>
+                        )
                     }
 
                   </button>
@@ -442,14 +539,26 @@ function Register() {
               <div className="form-group">
 
                 <label htmlFor="confirmPassword">
-                  Confirmar contrasena
+                  Confirmar contraseña
                 </label>
 
                 <div className="input-wrapper">
 
-                  <span className="input-icon">
-                    🔒
-                  </span>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="20"
+                    height="20"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="1.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    className="input-icon"
+                  >
+                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+                    <path d="M7 11V7a4 4 0 0 1 4-4h2a4 4 0 0 1 4 4v4"/>
+                  </svg>
 
                   <input
                     type={
@@ -463,7 +572,7 @@ function Register() {
                       formData.confirmPassword
                     }
                     onChange={handleChange}
-                    placeholder="Repite tu contrasena"
+                    placeholder="Repite tu contraseña"
                     className={
                       errors.confirmPassword
                         ? 'error'
@@ -544,11 +653,7 @@ function Register() {
 
             <p className="auth-footer">
 
-              Ya tienes una cuenta?
-
-              <Link to="/login">
-                Inicia sesion
-              </Link>
+              Ya tienes una cuenta? <Link to="/login">Inicia sesion</Link>
 
             </p>
 
