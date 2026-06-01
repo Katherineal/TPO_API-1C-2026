@@ -28,6 +28,9 @@ function AppRoutes() {
 
             <Route path="/productos/:id" element={<ProductDetail />} />
 
+            <Route path="/perfil" element={<Perfil />} />
+
+
         </Routes>
     );
 }
