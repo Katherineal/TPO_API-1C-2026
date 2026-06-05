@@ -8,6 +8,7 @@ import Home from "../pages/Home/Home";
 import Carrito from "../pages/Carrito/Carrito";
 import Favoritos from "../pages/Favoritos/Favoritos";
 import ProductDetail from "../pages/Productos/[id]/ProductDetail";
+import Perfil from "../pages/Perfil/Perfil";
 
 function AppRoutes() {
     return (

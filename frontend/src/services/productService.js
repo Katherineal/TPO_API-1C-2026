@@ -10,6 +10,11 @@ const productService = {
         return response.data;
     },
 
+    create: async (productData) => {
+        const response = await API.post("/api/productos", productData);
+        return response.data;
+    },
+
     updateStock: async (
         productId,
         newStock

@@ -55,6 +55,14 @@ const Navbar = ({ cartItemCount = 0 }) => {
           >
             Productos
           </NavLink>
+          {role === 'ADMIN' && (
+            <NavLink
+              to="/admin"
+              className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}
+            >
+              Admin
+            </NavLink>
+          )}
         </div>
 
         {/* Right Actions */}

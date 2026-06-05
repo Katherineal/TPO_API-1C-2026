@@ -40,7 +40,8 @@ public class UsuarioService {
     }
 
     public UsuarioDto mapToDto(Usuario usuario) {
-        if (usuario == null) return null;
+        if (usuario == null)
+            return null;
         return UsuarioDto.builder()
                 .id(usuario.getId())
                 .nombre(usuario.getNombre())
@@ -50,7 +51,8 @@ public class UsuarioService {
     }
 
     public Usuario mapToEntity(UsuarioDto usuarioDto) {
-        if (usuarioDto == null) return null;
+        if (usuarioDto == null)
+            return null;
         Usuario usuario = new Usuario();
         usuario.setId(usuarioDto.getId());
         usuario.setNombre(usuarioDto.getNombre());

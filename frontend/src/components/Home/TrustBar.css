@@ -1,0 +1,54 @@
+.trust-bar {
+  background-color: var(--card-bg);
+  border-top: 1px solid var(--border-color);
+  border-bottom: 1px solid var(--border-color);
+  padding: 3rem 5%;
+  margin: 3rem 0;
+}
+
+.trust-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 2rem;
+}
+
+.trust-item {
+  display: flex;
+  align-items: center;
+  gap: 1.2rem;
+}
+
+.trust-icon {
+  font-size: 2.2rem;
+  opacity: 0.8;
+}
+
+.trust-text h4 {
+  margin: 0 0 0.3rem 0;
+  font-size: 1rem;
+  color: var(--text-primary);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.trust-text p {
+  margin: 0;
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+}
+
+@media (max-width: 992px) {
+  .trust-container {
+    grid-template-columns: repeat(2, 1fr);
+    row-gap: 3rem;
+  }
+}
+
+@media (max-width: 576px) {
+  .trust-container {
+    grid-template-columns: 1fr;
+    row-gap: 2rem;
+  }
+}

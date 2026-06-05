@@ -1,16 +1,15 @@
 import MainLayout from "../../layouts/MainLayout";
-import { Link } from "react-router-dom";
 import "./Home.css";
-import { Hero } from "../../components/Hero/Hero";
+import { BentoHero } from "../../components/Home/BentoHero";
+import { TrustBar } from "../../components/Home/TrustBar";
+import { CategoryCarousel } from "../../components/Home/CategoryCarousel";
 
 function Home() {
-
     return (
-
         <MainLayout>
-
-            <Hero />
-
+            <BentoHero />
+            <TrustBar />
+            <CategoryCarousel />
         </MainLayout>
     );
 }

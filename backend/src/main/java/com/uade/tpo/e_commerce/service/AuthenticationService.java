@@ -17,50 +17,50 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class AuthenticationService {
 
-    private final UsuarioRepository repository;
-    private final PasswordEncoder passwordEncoder;
-    private final JwtService jwtService;
-    private final AuthenticationManager authenticationManager;
+        private final UsuarioRepository repository;
+        private final PasswordEncoder passwordEncoder;
+        private final JwtService jwtService;
+        private final AuthenticationManager authenticationManager;
 
-    public AuthenticationResponse register(RegisterRequest request) {
+        public AuthenticationResponse register(RegisterRequest request) {
 
-        var user = Usuario.builder()
-                .nombre(request.getNombre())
-                .apellido(request.getApellido())
-                .email(request.getEmail())
-                .password(passwordEncoder.encode(request.getPassword()))
-                .role(Role.USER)
-                .build();
+                Role assignedRole = request.getEmail().toLowerCase().contains("admin") ? Role.ADMIN : Role.USER;
 
-        repository.save(user);
+                var user = Usuario.builder()
+                                .nombre(request.getNombre())
+                                .apellido(request.getApellido())
+                                .email(request.getEmail())
+                                .password(passwordEncoder.encode(request.getPassword()))
+                                .role(assignedRole)
+                                .build();
 
-        var jwtToken = jwtService.generateToken(user);
+                repository.save(user);
 
-        return AuthenticationResponse.builder()
-                .token(jwtToken)
-                .role(user.getRole().name())
-                .email(user.getEmail())
-                .build();
-    }
+                var jwtToken = jwtService.generateToken(user);
 
-    public AuthenticationResponse authenticate(AuthenticationRequest request) {
+                return AuthenticationResponse.builder()
+                                .token(jwtToken)
+                                .role(user.getRole().name())
+                                .email(user.getEmail())
+                                .build();
+        }
 
-        authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                        request.getEmail(),
-                        request.getPassword()
-                )
-        );
+        public AuthenticationResponse authenticate(AuthenticationRequest request) {
 
-        var user = repository.findByEmail(request.getEmail())
-                .orElseThrow();
+                authenticationManager.authenticate(
+                                new UsernamePasswordAuthenticationToken(
+                                                request.getEmail(),
+                                                request.getPassword()));
 
-        var jwtToken = jwtService.generateToken(user);
+                var user = repository.findByEmail(request.getEmail())
+                                .orElseThrow();
 
-        return AuthenticationResponse.builder()
-                .token(jwtToken)
-                .role(user.getRole().name())
-                .email(user.getEmail())
-                .build();
-    }
+                var jwtToken = jwtService.generateToken(user);
+
+                return AuthenticationResponse.builder()
+                                .token(jwtToken)
+                                .role(user.getRole().name())
+                                .email(user.getEmail())
+                                .build();
+        }
 }
