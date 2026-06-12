@@ -1,0 +1,79 @@
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import API from "../../services/api";
+
+// Thunk para manejar el login
+export const login = createAsyncThunk(
+    "auth/login",
+    async (credentials, { rejectWithValue }) => {
+        try {
+            const response = await API.post("/api/auth/login", credentials);
+            
+            // Guardamos en localStorage para persistencia básica
+            localStorage.setItem("token", response.data.token);
+            localStorage.setItem("role", response.data.role);
+            localStorage.setItem("email", credentials.email);
+
+            return {
+                token: response.data.token,
+                role: response.data.role,
+                email: credentials.email
+            };
+        } catch (error) {
+            return rejectWithValue(
+                error.response?.data?.message || "Error al iniciar sesión"
+            );
+        }
+    }
+);
+
+const initialState = {
+    user: {
+        email: localStorage.getItem("email"),
+        role: localStorage.getItem("role"),
+    },
+    token: localStorage.getItem("token"),
+    isAuthenticated: !!localStorage.getItem("token"),
+    isLoading: false,
+    error: null,
+};
+
+const authSlice = createSlice({
+    name: "auth",
+    initialState,
+    reducers: {
+        logout: (state) => {
+            state.user = { email: null, role: null };
+            state.token = null;
+            state.isAuthenticated = false;
+            localStorage.removeItem("token");
+            localStorage.removeItem("role");
+            localStorage.removeItem("email");
+        },
+        clearError: (state) => {
+            state.error = null;
+        }
+    },
+    extraReducers: (builder) => {
+        builder
+            .addCase(login.pending, (state) => {
+                state.isLoading = true;
+                state.error = null;
+            })
+            .addCase(login.fulfilled, (state, action) => {
+                state.isLoading = false;
+                state.isAuthenticated = true;
+                state.token = action.payload.token;
+                state.user = {
+                    email: action.payload.email,
+                    role: action.payload.role
+                };
+            })
+            .addCase(login.rejected, (state, action) => {
+                state.isLoading = false;
+                state.error = action.payload;
+            });
+    }
+});
+
+export const { logout, clearError } = authSlice.actions;
+export default authSlice.reducer;

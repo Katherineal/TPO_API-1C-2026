@@ -1,5 +1,7 @@
 import { useState } from 'react';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
+import { useSelector, useDispatch } from 'react-redux';
+import { logout } from '../../store/slices/authSlice';
 import './Navbar.css';
 
 const Navbar = ({ cartItemCount = 0 }) => {
@@ -7,10 +9,11 @@ const Navbar = ({ cartItemCount = 0 }) => {
   const [isProfileOpen, setIsProfileOpen] = useState(false);
 
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const { isAuthenticated, user } = useSelector((state) => state.auth);
 
-  const isLoggedIn = !!localStorage.getItem('token');
-  const role = localStorage.getItem('role');
-  const email = localStorage.getItem('email');
+  const role = user?.role;
+  const email = user?.email;
 
   const closeMobileMenu = () => {
     setMobileMenuOpen(false);
@@ -26,9 +29,7 @@ const Navbar = ({ cartItemCount = 0 }) => {
   };
 
   const handleLogout = () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('role');
-    localStorage.removeItem('email');
+    dispatch(logout());
     navigate('/login');
     closeAllMenus();
   };
@@ -68,7 +69,7 @@ const Navbar = ({ cartItemCount = 0 }) => {
         {/* Right Actions */}
         <div className="navbar-actions">
           {/* Desktop: Favorites Icon */}
-          {isLoggedIn && (
+          {isAuthenticated && (
             <NavLink
               to="/favoritos"
               className={({ isActive }) => `action-btn favorites-btn ${isActive ? 'active' : ''}`}
@@ -91,7 +92,7 @@ const Navbar = ({ cartItemCount = 0 }) => {
           )}
 
           {/* Desktop: Cart Icon */}
-          {isLoggedIn && (
+          {isAuthenticated && (
             <NavLink
               to="/carrito"
               className={({ isActive }) => `action-btn cart-btn ${isActive ? 'active' : ''}`}
@@ -119,7 +120,7 @@ const Navbar = ({ cartItemCount = 0 }) => {
           )}
 
           {/* Desktop: User Menu / Login */}
-          {!isLoggedIn ? (
+          {!isAuthenticated ? (
             <NavLink
               to="/login"
               className={({ isActive }) => `action-btn login-btn ${isActive ? 'active' : ''}`}
@@ -218,7 +219,7 @@ const Navbar = ({ cartItemCount = 0 }) => {
               Productos
             </NavLink>
 
-            {isLoggedIn && (
+            {isAuthenticated && (
               <>
                 <NavLink
                   to="/favoritos"
@@ -240,7 +241,7 @@ const Navbar = ({ cartItemCount = 0 }) => {
               </>
             )}
 
-            {isLoggedIn && (
+            {isAuthenticated && (
               <>
                 <NavLink
                   to="/perfil"
@@ -266,7 +267,7 @@ const Navbar = ({ cartItemCount = 0 }) => {
               </>
             )}
 
-            {!isLoggedIn && (
+            {!isAuthenticated && (
               <NavLink
                 to="/login"
                 className={({ isActive }) => `mobile-link ${isActive ? 'active' : ''}`}

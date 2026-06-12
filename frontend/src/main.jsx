@@ -1,5 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
+import { Provider } from "react-redux";
+import { store } from "./store";
 
 import "./index.css";
 import App from "./App";
@@ -14,20 +16,20 @@ ReactDOM.createRoot(
 ).render(
 
     <React.StrictMode>
+        <Provider store={store}>
+            <BrowserRouter>
 
-        <BrowserRouter>
+                <CartProvider>
 
-            <CartProvider>
+                    <FavoriteProvider>
 
-                <FavoriteProvider>
+                        <App />
 
-                    <App />
+                    </FavoriteProvider>
 
-                </FavoriteProvider>
+                </CartProvider>
 
-            </CartProvider>
-
-        </BrowserRouter>
-
+            </BrowserRouter>
+        </Provider>
     </React.StrictMode>
 );
