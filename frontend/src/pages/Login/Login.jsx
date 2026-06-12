@@ -77,6 +77,11 @@ function Login({ onLogin }) {
             formData.email
         );
 
+        localStorage.setItem(
+            "userId",
+            response.data.id
+        );
+
         if (
             response.data.role === "ADMIN"
         ) {
