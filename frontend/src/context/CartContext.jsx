@@ -15,13 +15,15 @@ export function CartProvider({ children }) {
     const cartItems = useSelector((state) => state.cart.items);
     const loading = useSelector((state) => state.cart.loading);
 
+    const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
+
     // Cargar el carrito inicial si el usuario está logueado
     useEffect(() => {
         const userId = localStorage.getItem("userId");
-        if (userId) {
+        if (userId && isAuthenticated) {
             dispatch(fetchCart(userId));
         }
-    }, [dispatch]);
+    }, [dispatch, isAuthenticated]);
 
     const addToCart = (product) => {
         const userId = localStorage.getItem("userId");
