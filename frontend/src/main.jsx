@@ -7,7 +7,6 @@ import "./index.css";
 import App from "./App";
 
 import { BrowserRouter } from "react-router-dom";
-
 import { CartProvider } from "./context/CartContext";
 import { FavoriteProvider } from "./context/FavoriteContext";
 
@@ -18,17 +17,11 @@ ReactDOM.createRoot(
     <React.StrictMode>
         <Provider store={store}>
             <BrowserRouter>
-
                 <CartProvider>
-
                     <FavoriteProvider>
-
                         <App />
-
                     </FavoriteProvider>
-
                 </CartProvider>
-
             </BrowserRouter>
         </Provider>
     </React.StrictMode>

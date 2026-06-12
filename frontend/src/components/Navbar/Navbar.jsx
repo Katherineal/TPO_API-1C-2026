@@ -37,12 +37,12 @@ const Navbar = ({ cartItemCount = 0 }) => {
   return (
     <nav className="navbar">
       <div className="navbar-container">
-        {/* Logo */}
+        {/* Logotipo */}
         <Link to="/" className="navbar-logo" onClick={closeAllMenus}>
           <span className="logo-text">TechStore</span>
         </Link>
 
-        {/* Desktop Navigation */}
+        {/* Navegación de Escritorio */}
         <div className="navbar-links-desktop">
           <NavLink
             to="/"
@@ -66,7 +66,7 @@ const Navbar = ({ cartItemCount = 0 }) => {
           )}
         </div>
 
-        {/* Right Actions */}
+        {/* Acciones de la Derecha */}
         <div className="navbar-actions">
           {/* Desktop: Favorites Icon */}
           {isAuthenticated && (
@@ -185,7 +185,7 @@ const Navbar = ({ cartItemCount = 0 }) => {
             </div>
           )}
 
-          {/* Mobile Menu Toggle */}
+          {/* Alternador de Menú Móvil */}
           <button
             className={`mobile-menu-btn ${mobileMenuOpen ? 'active' : ''}`}
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
@@ -199,7 +199,7 @@ const Navbar = ({ cartItemCount = 0 }) => {
         </div>
       </div>
 
-      {/* Mobile Menu */}
+      {/* Menú Móvil */}
       {mobileMenuOpen && (
         <div className="mobile-menu">
           <div className="mobile-menu-content">

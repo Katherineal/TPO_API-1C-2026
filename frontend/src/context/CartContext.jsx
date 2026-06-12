@@ -1,131 +1,68 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import {
+    addToCart as addToCartAction,
+    removeFromCart as removeFromCartAction,
+    clearCart as clearCartAction,
+    updateQuantity as updateQuantityAction,
+} from "../redux/cartSlice";
 
 const CartContext = createContext();
 
 export function CartProvider({ children }) {
-
-    const [cartItems, setCartItems] = useState([]);
+    const dispatch = useDispatch();
+    const cartItems = useSelector((state) => state.cart.items);
 
     const addToCart = (product) => {
-
-        const token =
-            localStorage.getItem("token");
-
-        // Solo permite agregar si está logueado
+        const token = localStorage.getItem("token");
         if (!token) {
-
-            alert(
-                "Debes iniciar sesión para agregar productos al carrito"
-            );
-
+            alert("Debes iniciar sesión para agregar productos al carrito");
             return;
         }
-
-        const existingProduct =
-            cartItems.find(
-                item => item.id === product.id
-            );
-
-        if (existingProduct) {
-
-            const updatedCart =
-                cartItems.map(item =>
-
-                    item.id === product.id
-                        ? {
-                            ...item,
-                            quantity:
-                                item.quantity + 1
-                        }
-                        : item
-                );
-
-            setCartItems(updatedCart);
-
-        } else {
-
-            setCartItems([
-                ...cartItems,
-                {
-                    ...product,
-                    quantity: 1
-                }
-            ]);
-        }
+        dispatch(addToCartAction(product));
     };
 
     const removeFromCart = (id) => {
-
-        const updatedCart =
-            cartItems.filter(
-                item => item.id !== id
-            );
-
-        setCartItems(updatedCart);
+        dispatch(removeFromCartAction(id));
     };
 
     const clearCart = () => {
-
-        setCartItems([]);
+        dispatch(clearCartAction());
     };
 
-    const updateQuantity = (
-        id,
-        newQuantity
-    ) => {
-
-        const updatedCart =
-            cartItems.map(item =>
-
-                item.id === id
-                    ? {
-                        ...item,
-                        quantity: newQuantity
-                    }
-                    : item
-            );
-
-        setCartItems(updatedCart);
+    const updateQuantity = (id, newQuantity) => {
+        dispatch(updateQuantityAction({ id, quantity: newQuantity }));
     };
 
-    const cartTotal =
-        cartItems.reduce(
-            (total, item) =>
-                total +
-                item.precio * item.quantity,
-            0
-        );
+    const cartTotal = cartItems.reduce(
+        (total, item) => total + item.precio * item.quantity,
+        0
+    );
 
-    const cartCount =
-        cartItems.reduce(
-            (total, item) =>
-                total + item.quantity,
-            0
-        );
+    const cartCount = cartItems.reduce(
+        (total, item) => total + item.quantity,
+        0
+    );
+
+    const value = {
+        items: cartItems,
+        cartItems,
+        addToCart,
+        removeFromCart,
+        clearCart,
+        updateQuantity,
+        cartTotal,
+        cartCount,
+        loading: false,
+    };
 
     return (
-
-        <CartContext.Provider
-            value={{
-                items: cartItems,
-                cartItems,
-                addToCart,
-                removeFromCart,
-                clearCart,
-                updateQuantity,
-                cartTotal,
-                cartCount,
-                loading: false
-            }}
-        >
-
+        <CartContext.Provider value={value}>
             {children}
-
         </CartContext.Provider>
     );
 }
 
 export function useCart() {
-
     return useContext(CartContext);
 }
