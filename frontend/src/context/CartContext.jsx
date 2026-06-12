@@ -1,10 +1,11 @@
-import { createContext, useContext } from "react";
+import { createContext, useContext, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import {
-    addToCart as addToCartAction,
-    removeFromCart as removeFromCartAction,
-    clearCart as clearCartAction,
-    updateQuantity as updateQuantityAction,
+    fetchCart,
+    addToCartAsync,
+    removeFromCartAsync,
+    clearCartAsync,
+    updateQuantityAsync,
 } from "../redux/cartSlice";
 
 const CartContext = createContext();
@@ -12,26 +13,54 @@ const CartContext = createContext();
 export function CartProvider({ children }) {
     const dispatch = useDispatch();
     const cartItems = useSelector((state) => state.cart.items);
+    const loading = useSelector((state) => state.cart.loading);
+
+    // Cargar el carrito inicial si el usuario está logueado
+    useEffect(() => {
+        const userId = localStorage.getItem("userId");
+        if (userId) {
+            dispatch(fetchCart(userId));
+        }
+    }, [dispatch]);
 
     const addToCart = (product) => {
-        const token = localStorage.getItem("token");
-        if (!token) {
+        const userId = localStorage.getItem("userId");
+        if (!userId) {
             alert("Debes iniciar sesión para agregar productos al carrito");
             return;
         }
-        dispatch(addToCartAction(product));
+        dispatch(addToCartAsync({ 
+            userId, 
+            productId: product.id, 
+            quantity: product.quantity || 1 
+        }));
     };
 
     const removeFromCart = (id) => {
-        dispatch(removeFromCartAction(id));
+        const userId = localStorage.getItem("userId");
+        if (!userId) return;
+        
+        // Find the itemId for this product id
+        const item = cartItems.find(item => item.id === id);
+        if (item && item.itemId) {
+            dispatch(removeFromCartAsync({ userId, itemId: item.itemId }));
+        }
     };
 
     const clearCart = () => {
-        dispatch(clearCartAction());
+        const userId = localStorage.getItem("userId");
+        if (!userId) return;
+        dispatch(clearCartAsync(userId));
     };
 
     const updateQuantity = (id, newQuantity) => {
-        dispatch(updateQuantityAction({ id, quantity: newQuantity }));
+        const userId = localStorage.getItem("userId");
+        if (!userId) return;
+
+        const item = cartItems.find(item => item.id === id);
+        if (item && item.itemId) {
+            dispatch(updateQuantityAsync({ userId, itemId: item.itemId, quantity: newQuantity }));
+        }
     };
 
     const cartTotal = cartItems.reduce(
@@ -53,7 +82,7 @@ export function CartProvider({ children }) {
         updateQuantity,
         cartTotal,
         cartCount,
-        loading: false,
+        loading,
     };
 
     return (

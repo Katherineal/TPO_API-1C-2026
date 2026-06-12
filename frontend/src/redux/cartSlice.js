@@ -1,86 +1,165 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import API from "../services/api";
 
-// Carga el estado inicial del carrito desde el localStorage del navegador si existe.
-// Esto permite que el carrito persista si el usuario recarga la página.
-const loadCartFromStorage = () => {
-    try {
-        const storedCart = localStorage.getItem("cartItems");
-        return storedCart ? JSON.parse(storedCart) : [];
-    } catch (error) {
-        console.error("Error al cargar el carrito desde localStorage:", error);
-        return [];
+// Thunks asíncronos para interactuar con el backend
+
+export const fetchCart = createAsyncThunk(
+    "cart/fetchCart",
+    async (userId, { rejectWithValue }) => {
+        try {
+            const response = await API.get(`/api/carrito/${userId}`);
+            return response.data;
+        } catch (error) {
+            return rejectWithValue(error.response.data);
+        }
     }
+);
+
+export const addToCartAsync = createAsyncThunk(
+    "cart/addToCartAsync",
+    async ({ userId, productId, quantity = 1 }, { rejectWithValue }) => {
+        try {
+            const response = await API.post(`/api/carrito/${userId}/agregar?productoId=${productId}&cantidad=${quantity}`);
+            return response.data;
+        } catch (error) {
+            return rejectWithValue(error.response.data);
+        }
+    }
+);
+
+export const removeFromCartAsync = createAsyncThunk(
+    "cart/removeFromCartAsync",
+    async ({ userId, itemId }, { rejectWithValue }) => {
+        try {
+            const response = await API.delete(`/api/carrito/${userId}/items/${itemId}`);
+            return response.data;
+        } catch (error) {
+            return rejectWithValue(error.response.data);
+        }
+    }
+);
+
+export const clearCartAsync = createAsyncThunk(
+    "cart/clearCartAsync",
+    async (userId, { rejectWithValue }) => {
+        try {
+            const response = await API.delete(`/api/carrito/${userId}/vaciar`);
+            return response.data;
+        } catch (error) {
+            return rejectWithValue(error.response.data);
+        }
+    }
+);
+
+export const updateQuantityAsync = createAsyncThunk(
+    "cart/updateQuantityAsync",
+    async ({ userId, itemId, quantity }, { rejectWithValue }) => {
+        try {
+            const response = await API.put(`/api/carrito/${userId}/items/${itemId}/cantidad?nuevaCantidad=${quantity}`);
+            return response.data;
+        } catch (error) {
+            return rejectWithValue(error.response.data);
+        }
+    }
+);
+
+// Mapea los items del CarritoDto (del backend) al formato que usa el frontend.
+// El backend devuelve ItemCarritoDto que tiene: id, productoId, productoNombre, cantidad, precioUnitario, subtotal.
+const mapBackendCartToItems = (carritoDto) => {
+    if (!carritoDto || !carritoDto.items) return [];
+    return carritoDto.items.map(item => ({
+        id: item.productoId,
+        itemId: item.id, // ID del item en el carrito, necesario para borrar/actualizar cantidad en backend
+        nombre: item.productoNombre,
+        precio: item.precioUnitario,
+        imagen: "", // backend DTO doesn't include image, might need to fetch separately or rely on existing store if possible. For now fallback to empty or handle in UI
+        quantity: item.cantidad,
+        subtotal: item.subtotal
+    }));
 };
 
-// Define el estado inicial con la lista de items vacía o cargada del storage.
 const initialState = {
-    items: loadCartFromStorage(),
+    items: [],
+    loading: false,
+    error: null,
 };
 
-// Crea el slice del carrito que agrupa el estado, los reducers y genera las acciones automáticamente.
 const cartSlice = createSlice({
     name: "cart",
     initialState,
     reducers: {
-        // Reducer para agregar un producto al carrito
-        addToCart: (state, action) => {
-            const product = action.payload;
-            const existingProduct = state.items.find(
-                (item) => item.id === product.id
-            );
-
-            // Si el payload contiene una cantidad específica la usa; si no, por defecto agrega 1 item.
-            const quantityToAdd = product.quantity || 1;
-
-            if (existingProduct) {
-                // Si el producto ya existe en el carrito, incrementa su cantidad.
-                existingProduct.quantity += quantityToAdd;
-            } else {
-                // Si el producto es nuevo, lo agrega al carrito con la cantidad especificada.
-                state.items.push({
-                    ...product,
-                    quantity: quantityToAdd,
-                });
-            }
-            // Guarda los cambios actualizados en localStorage.
-            localStorage.setItem("cartItems", JSON.stringify(state.items));
-        },
-        // Reducer para eliminar un producto del carrito mediante su ID
-        removeFromCart: (state, action) => {
-            const id = action.payload;
-            state.items = state.items.filter((item) => item.id !== id);
-            // Guarda los cambios actualizados en localStorage.
-            localStorage.setItem("cartItems", JSON.stringify(state.items));
-        },
-        // Reducer para vaciar por completo el carrito
-        clearCart: (state) => {
+        // Reducer fallback por si el usuario desloguea y se quiere limpiar el estado
+        resetCartState: (state) => {
             state.items = [];
-            // Guarda los cambios actualizados en localStorage.
-            localStorage.setItem("cartItems", JSON.stringify(state.items));
-        },
-        // Reducer para actualizar la cantidad específica de un producto en el carrito
-        updateQuantity: (state, action) => {
-            const { id, quantity } = action.payload;
-            const existingProduct = state.items.find(
-                (item) => item.id === id
-            );
-
-            if (existingProduct && quantity > 0) {
-                existingProduct.quantity = quantity;
-            }
-            // Guarda los cambios actualizados en localStorage.
-            localStorage.setItem("cartItems", JSON.stringify(state.items));
-        },
+            state.loading = false;
+            state.error = null;
+        }
     },
+    extraReducers: (builder) => {
+        builder
+            // fetchCart
+            .addCase(fetchCart.pending, (state) => {
+                state.loading = true;
+            })
+            .addCase(fetchCart.fulfilled, (state, action) => {
+                state.loading = false;
+                state.items = mapBackendCartToItems(action.payload);
+            })
+            .addCase(fetchCart.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload;
+            })
+            // addToCartAsync
+            .addCase(addToCartAsync.pending, (state) => {
+                state.loading = true;
+            })
+            .addCase(addToCartAsync.fulfilled, (state, action) => {
+                state.loading = false;
+                state.items = mapBackendCartToItems(action.payload);
+            })
+            .addCase(addToCartAsync.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload;
+            })
+            // removeFromCartAsync
+            .addCase(removeFromCartAsync.pending, (state) => {
+                state.loading = true;
+            })
+            .addCase(removeFromCartAsync.fulfilled, (state, action) => {
+                state.loading = false;
+                state.items = mapBackendCartToItems(action.payload);
+            })
+            .addCase(removeFromCartAsync.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload;
+            })
+            // clearCartAsync
+            .addCase(clearCartAsync.pending, (state) => {
+                state.loading = true;
+            })
+            .addCase(clearCartAsync.fulfilled, (state, action) => {
+                state.loading = false;
+                state.items = mapBackendCartToItems(action.payload);
+            })
+            .addCase(clearCartAsync.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload;
+            })
+            // updateQuantityAsync
+            .addCase(updateQuantityAsync.pending, (state) => {
+                state.loading = true;
+            })
+            .addCase(updateQuantityAsync.fulfilled, (state, action) => {
+                state.loading = false;
+                state.items = mapBackendCartToItems(action.payload);
+            })
+            .addCase(updateQuantityAsync.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload;
+            });
+    }
 });
 
-// Exporta los creadores de acciones generados automáticamente por Redux Toolkit.
-export const {
-    addToCart,
-    removeFromCart,
-    clearCart,
-    updateQuantity,
-} = cartSlice.actions;
+export const { resetCartState } = cartSlice.actions;
 
-// Exporta el reducer principal del slice para registrarlo en el store.
 export default cartSlice.reducer;

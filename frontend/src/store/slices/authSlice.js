@@ -12,11 +12,13 @@ export const login = createAsyncThunk(
             localStorage.setItem("token", response.data.token);
             localStorage.setItem("role", response.data.role);
             localStorage.setItem("email", credentials.email);
+            localStorage.setItem("userId", response.data.id);
 
             return {
                 token: response.data.token,
                 role: response.data.role,
-                email: credentials.email
+                email: credentials.email,
+                id: response.data.id
             };
         } catch (error) {
             return rejectWithValue(
@@ -48,6 +50,7 @@ const authSlice = createSlice({
             localStorage.removeItem("token");
             localStorage.removeItem("role");
             localStorage.removeItem("email");
+            localStorage.removeItem("userId");
         },
         clearError: (state) => {
             state.error = null;
