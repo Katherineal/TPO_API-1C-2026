@@ -5,6 +5,9 @@ import "./index.css";
 import App from "./App";
 
 import { BrowserRouter } from "react-router-dom";
+// Importa el Provider de react-redux y el store configurado
+import { Provider } from "react-redux";
+import { store } from "./redux/store";
 
 import { CartProvider } from "./context/CartContext";
 import { FavoriteProvider } from "./context/FavoriteContext";
@@ -17,15 +20,20 @@ ReactDOM.createRoot(
 
         <BrowserRouter>
 
-            <CartProvider>
+            {/* Proveedor global de Redux para dar acceso al store a toda la aplicación */}
+            <Provider store={store}>
 
-                <FavoriteProvider>
+                <CartProvider>
 
-                    <App />
+                    <FavoriteProvider>
 
-                </FavoriteProvider>
+                        <App />
 
-            </CartProvider>
+                    </FavoriteProvider>
+
+                </CartProvider>
+
+            </Provider>
 
         </BrowserRouter>
 

@@ -37,7 +37,7 @@ const postProduct = (product, token) => {
     const options = {
       hostname: 'localhost',
       port: 8080,
-      path: '/productos',
+      path: '/api/productos',
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -93,9 +93,9 @@ const authReq = (path, payload) => {
 };
 
 async function seed() {
-  const credentials = { nombre: "adminseed", email: "adminseed@uade.edu.ar", password: "password123", role: "ADMIN" };
-  await authReq('/auth/register', credentials);
-  const authResponse = await authReq('/auth/login', { email: credentials.email, password: credentials.password });
+  const credentials = { nombre: "adminseed", apellido: "Seed", email: "adminseed@uade.edu.ar", password: "password123", role: "ADMIN" };
+  await authReq('/api/auth/register', credentials);
+  const authResponse = await authReq('/api/auth/login', { email: credentials.email, password: credentials.password });
   const token = authResponse.token || authResponse.access_token;
   
   if (!token) {

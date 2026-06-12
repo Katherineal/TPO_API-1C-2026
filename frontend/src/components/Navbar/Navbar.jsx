@@ -1,8 +1,10 @@
 import { useState } from 'react';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
+import { useCart } from '../../context/CartContext';
 import './Navbar.css';
 
-const Navbar = ({ cartItemCount = 0 }) => {
+const Navbar = () => {
+  const { cartCount } = useCart();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
 
@@ -36,12 +38,12 @@ const Navbar = ({ cartItemCount = 0 }) => {
   return (
     <nav className="navbar">
       <div className="navbar-container">
-        {/* Logo */}
+        {/* Logotipo */}
         <Link to="/" className="navbar-logo" onClick={closeAllMenus}>
           <span className="logo-text">TechStore</span>
         </Link>
 
-        {/* Desktop Navigation */}
+        {/* Navegación de Escritorio */}
         <div className="navbar-links-desktop">
           <NavLink
             to="/"
@@ -65,9 +67,9 @@ const Navbar = ({ cartItemCount = 0 }) => {
           )}
         </div>
 
-        {/* Right Actions */}
+        {/* Acciones de la Derecha */}
         <div className="navbar-actions">
-          {/* Desktop: Favorites Icon */}
+          {/* Escritorio: Icono de Favoritos */}
           {isLoggedIn && (
             <NavLink
               to="/favoritos"
@@ -90,7 +92,7 @@ const Navbar = ({ cartItemCount = 0 }) => {
             </NavLink>
           )}
 
-          {/* Desktop: Cart Icon */}
+          {/* Escritorio: Icono de Carrito */}
           {isLoggedIn && (
             <NavLink
               to="/carrito"
@@ -112,13 +114,13 @@ const Navbar = ({ cartItemCount = 0 }) => {
                 <circle cx="19" cy="21" r="1" />
                 <path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12" />
               </svg>
-              {cartItemCount > 0 && (
-                <span className="cart-badge">{cartItemCount > 99 ? '99+' : cartItemCount}</span>
+              {cartCount > 0 && (
+                <span className="cart-badge">{cartCount > 99 ? '99+' : cartCount}</span>
               )}
             </NavLink>
           )}
 
-          {/* Desktop: User Menu / Login */}
+          {/* Escritorio: Menú de Usuario / Login */}
           {!isLoggedIn ? (
             <NavLink
               to="/login"
@@ -184,7 +186,7 @@ const Navbar = ({ cartItemCount = 0 }) => {
             </div>
           )}
 
-          {/* Mobile Menu Toggle */}
+          {/* Alternador de Menú Móvil */}
           <button
             className={`mobile-menu-btn ${mobileMenuOpen ? 'active' : ''}`}
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
@@ -198,7 +200,7 @@ const Navbar = ({ cartItemCount = 0 }) => {
         </div>
       </div>
 
-      {/* Mobile Menu */}
+      {/* Menú Móvil */}
       {mobileMenuOpen && (
         <div className="mobile-menu">
           <div className="mobile-menu-content">
