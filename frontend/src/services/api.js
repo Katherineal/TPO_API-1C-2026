@@ -6,21 +6,23 @@ const API = axios.create({
         "http://localhost:8080"
 });
 
-API.interceptors.request.use(
+// API.interceptors.request.use(
 
-    (config) => {
+//     (config) => {
 
-        const token =
-            localStorage.getItem("token");
+//         const token =
+//             localStorage.getItem("token");
 
-        if (token && token !== "undefined" && token !== "null") {
+//         if (token && token !== "undefined" && token !== "null") {
 
-            config.headers.Authorization =
-                `Bearer ${token}`;
-        }
+//             config.headers.Authorization =
+//                 `Bearer ${token}`;
+//         }
 
-        return config;
-    }
-);
+//         return config;
+//     }
+// );
+
+API.defaults.withCredentials = true
 
 export default API;

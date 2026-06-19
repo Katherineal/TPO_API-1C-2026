@@ -28,17 +28,23 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
              HttpServletResponse response,
              FilterChain filterChain
     ) throws ServletException, IOException {
-        // Profe, acá interceptamos cada petición para buscar el token en el header Authorization.
-        final String authHeader = request.getHeader("Authorization");
-        final String jwt;
+        // Profe, acá buscamos el token dentro de las cookies enviadas por el navegador
+        String jwt = null;
         final String userEmail;
 
-        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+        if (request.getCookies() != null) {
+            for (jakarta.servlet.http.Cookie cookie : request.getCookies()) {
+                if ("jwt".equals(cookie.getName())) {
+                    jwt = cookie.getValue();
+                    break;
+                }
+            }
+        }
+
+        if (jwt == null) {
             filterChain.doFilter(request, response);
             return;
         }
-
-        jwt = authHeader.substring(7);
         try {
             userEmail = jwtService.extractUsername(jwt);
 

@@ -9,7 +9,7 @@ export const login = createAsyncThunk(
             const response = await API.post("/api/auth/login", credentials);
             
             // Guardamos en localStorage para persistencia básica
-            localStorage.setItem("token", response.data.token);
+            // localStorage.setItem("token", response.data.token);
             localStorage.setItem("role", response.data.role);
             localStorage.setItem("email", credentials.email);
             localStorage.setItem("userId", response.data.id);
@@ -28,13 +28,26 @@ export const login = createAsyncThunk(
     }
 );
 
+export const logoutUser = createAsyncThunk(
+    "auth/logoutUser",
+    async (_, { dispatch }) => {
+        try {
+            await API.post("/api/auth/logout");
+        } catch (error) {
+            console.error("Error al cerrar sesión en el servidor", error);
+        } finally {
+            dispatch(logoutLocal());
+        }
+    }
+);
+
 const initialState = {
     user: {
         email: localStorage.getItem("email"),
         role: localStorage.getItem("role"),
     },
-    token: localStorage.getItem("token"),
-    isAuthenticated: !!localStorage.getItem("token"),
+    token: null, // Ya no guardamos el token
+    isAuthenticated: !!localStorage.getItem("userId"), // Usamos el ID como prueba de autenticación
     isLoading: false,
     error: null,
 };
@@ -43,11 +56,11 @@ const authSlice = createSlice({
     name: "auth",
     initialState,
     reducers: {
-        logout: (state) => {
+        logoutLocal: (state) => {
             state.user = { email: null, role: null };
             state.token = null;
             state.isAuthenticated = false;
-            localStorage.removeItem("token");
+            // localStorage.removeItem("token");
             localStorage.removeItem("role");
             localStorage.removeItem("email");
             localStorage.removeItem("userId");
@@ -78,5 +91,5 @@ const authSlice = createSlice({
     }
 });
 
-export const { logout, clearError } = authSlice.actions;
+export const { logoutLocal, clearError } = authSlice.actions;
 export default authSlice.reducer;

@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
-import { logout } from '../../store/slices/authSlice';
+import { logoutUser } from '../../store/slices/authSlice';
 import './Navbar.css';
 
 const Navbar = ({ cartItemCount = 0 }) => {
@@ -29,7 +29,7 @@ const Navbar = ({ cartItemCount = 0 }) => {
   };
 
   const handleLogout = () => {
-    dispatch(logout());
+    dispatch(logoutUser());
     navigate('/login');
     closeAllMenus();
   };
