@@ -1,18 +1,37 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { login, clearError } from '../../store/slices/authSlice';
 import MainLayout from '../../layouts/MainLayout';
 import './Login.css';
-import API from "../../services/api";
 
-function Login({ onLogin }) {
+function Login() {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const { isLoading, error, isAuthenticated, user } = useSelector((state) => state.auth);
+
   const [formData, setFormData] = useState({
     email: '',
     password: ''
   });
   const [errors, setErrors] = useState({});
-  const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+
+  // Limpiar errores al desmontar o cambiar datos
+  useEffect(() => {
+    return () => dispatch(clearError());
+  }, [dispatch]);
+
+  // Si ya está autenticado, redirigir
+  useEffect(() => {
+    if (isAuthenticated) {
+      if (user.role === "ADMIN") {
+        navigate("/admin");
+      } else {
+        navigate("/");
+      }
+    }
+  }, [isAuthenticated, user, navigate]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -20,6 +39,7 @@ function Login({ onLogin }) {
     if (errors[name]) {
       setErrors(prev => ({ ...prev, [name]: '' }));
     }
+    if (error) dispatch(clearError());
   };
 
   const validateForm = () => {
@@ -42,66 +62,17 @@ function Login({ onLogin }) {
   };
 
   const handleSubmit = async (e) => {
-
     e.preventDefault();
 
     if (!validateForm()) {
         return;
     }
 
-    try {
-
-        setIsLoading(true);
-
-        const response = await API.post(
-            "/api/auth/login",
-            {
-                email: formData.email,
-                password: formData.password
-            }
-        );
-
-
-        localStorage.setItem(
-            "token",
-            response.data.token
-        );
-
-        localStorage.setItem(
-            "role",
-            response.data.role
-        );
-
-        localStorage.setItem(
-            "email",
-            formData.email
-        );
-
-        if (
-            response.data.role === "ADMIN"
-        ) {
-
-            navigate("/admin");
-
-        } else {
-
-            navigate("/");
-        }
-
-    } catch (error) {
-
-        console.log(error);
-
-        setErrors({
-            general:
-                "Email o contraseña incorrectos"
-        });
-
-    } finally {
-
-        setIsLoading(false);
-    }
-};
+    dispatch(login({
+        email: formData.email,
+        password: formData.password
+    }));
+  };
 
   return (
     <MainLayout>
@@ -112,11 +83,11 @@ function Login({ onLogin }) {
               <h1>Iniciar Sesion</h1>
               <p>Bienvenido de nuevo a TechStore</p>
             </div>
-            {errors.general && (
-  <div className="login-error">
-    {errors.general}
-  </div>
-)}
+            {error && (
+              <div className="login-error">
+                {error}
+              </div>
+            )}
             <form onSubmit={handleSubmit} className="auth-form">
               <div className="form-group">
                 <label htmlFor="email">Email</label>

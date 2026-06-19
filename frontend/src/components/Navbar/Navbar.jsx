@@ -1,18 +1,19 @@
 import { useState } from 'react';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
-import { useCart } from '../../context/CartContext';
+import { useSelector, useDispatch } from 'react-redux';
+import { logoutUser } from '../../store/slices/authSlice';
 import './Navbar.css';
 
-const Navbar = () => {
-  const { cartCount } = useCart();
+const Navbar = ({ cartItemCount = 0 }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
 
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const { isAuthenticated, user } = useSelector((state) => state.auth);
 
-  const isLoggedIn = !!localStorage.getItem('token');
-  const role = localStorage.getItem('role');
-  const email = localStorage.getItem('email');
+  const role = user?.role;
+  const email = user?.email;
 
   const closeMobileMenu = () => {
     setMobileMenuOpen(false);
@@ -28,9 +29,7 @@ const Navbar = () => {
   };
 
   const handleLogout = () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('role');
-    localStorage.removeItem('email');
+    dispatch(logoutUser());
     navigate('/login');
     closeAllMenus();
   };
@@ -69,8 +68,8 @@ const Navbar = () => {
 
         {/* Acciones de la Derecha */}
         <div className="navbar-actions">
-          {/* Escritorio: Icono de Favoritos */}
-          {isLoggedIn && (
+          {/* Desktop: Favorites Icon */}
+          {isAuthenticated && (
             <NavLink
               to="/favoritos"
               className={({ isActive }) => `action-btn favorites-btn ${isActive ? 'active' : ''}`}
@@ -92,8 +91,8 @@ const Navbar = () => {
             </NavLink>
           )}
 
-          {/* Escritorio: Icono de Carrito */}
-          {isLoggedIn && (
+          {/* Desktop: Cart Icon */}
+          {isAuthenticated && (
             <NavLink
               to="/carrito"
               className={({ isActive }) => `action-btn cart-btn ${isActive ? 'active' : ''}`}
@@ -114,14 +113,14 @@ const Navbar = () => {
                 <circle cx="19" cy="21" r="1" />
                 <path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12" />
               </svg>
-              {cartCount > 0 && (
-                <span className="cart-badge">{cartCount > 99 ? '99+' : cartCount}</span>
+              {cartItemCount > 0 && (
+                <span className="cart-badge">{cartItemCount > 99 ? '99+' : cartItemCount}</span>
               )}
             </NavLink>
           )}
 
-          {/* Escritorio: Menú de Usuario / Login */}
-          {!isLoggedIn ? (
+          {/* Desktop: User Menu / Login */}
+          {!isAuthenticated ? (
             <NavLink
               to="/login"
               className={({ isActive }) => `action-btn login-btn ${isActive ? 'active' : ''}`}
@@ -220,7 +219,7 @@ const Navbar = () => {
               Productos
             </NavLink>
 
-            {isLoggedIn && (
+            {isAuthenticated && (
               <>
                 <NavLink
                   to="/favoritos"
@@ -242,7 +241,7 @@ const Navbar = () => {
               </>
             )}
 
-            {isLoggedIn && (
+            {isAuthenticated && (
               <>
                 <NavLink
                   to="/perfil"
@@ -268,7 +267,7 @@ const Navbar = () => {
               </>
             )}
 
-            {!isLoggedIn && (
+            {!isAuthenticated && (
               <NavLink
                 to="/login"
                 className={({ isActive }) => `mobile-link ${isActive ? 'active' : ''}`}

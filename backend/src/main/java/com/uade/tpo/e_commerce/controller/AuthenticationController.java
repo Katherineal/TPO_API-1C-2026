@@ -28,9 +28,43 @@ public class AuthenticationController {
 
     @PostMapping("/login")
     public ResponseEntity<AuthenticationResponse> authenticate(
-            @RequestBody AuthenticationRequest request
+            @RequestBody AuthenticationRequest request,
+            jakarta.servlet.http.HttpServletResponse response 
     ) {
-        // Profe, acá llamamos al servicio de autenticación para validar y obtener el token.
-        return ResponseEntity.ok(service.authenticate(request));
+        // Ejecutamos el login normal
+        AuthenticationResponse authResponse = service.authenticate(request);
+        String jwtToken = authResponse.getToken();
+
+        // Creamos la Cookie HttpOnly
+        org.springframework.http.ResponseCookie cookie = org.springframework.http.ResponseCookie.from("jwt", jwtToken)
+                .httpOnly(true)
+                .secure(false) 
+                .path("/")
+                .maxAge(15 * 60) 
+                .sameSite("Strict")
+                .build();
+
+        
+        response.addHeader(org.springframework.http.HttpHeaders.SET_COOKIE, cookie.toString());
+
+    
+        authResponse.setToken(null);
+
+        return ResponseEntity.ok(authResponse);
+    }
+
+    @PostMapping("/logout")
+    public ResponseEntity<?> logout(jakarta.servlet.http.HttpServletResponse response) {
+        // Creamos una cookie idéntica pero con maxAge = 0 para que el navegador la borre
+        org.springframework.http.ResponseCookie cookie = org.springframework.http.ResponseCookie.from("jwt", "")
+                .httpOnly(true)
+                .secure(false) // Igual que en el login, falso para localhost
+                .path("/")
+                .maxAge(0) // Destruye la cookie inmediatamente
+                .sameSite("Strict")
+                .build();
+
+        response.addHeader(org.springframework.http.HttpHeaders.SET_COOKIE, cookie.toString());
+        return ResponseEntity.ok().build();
     }
 }
