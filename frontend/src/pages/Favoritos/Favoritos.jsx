@@ -6,7 +6,7 @@ import MainLayout from '../../layouts/MainLayout';
 
 function Favoritos() {
   const { favoriteItems } = useFavorite();
-  const token = localStorage.getItem('token');
+  const token = localStorage.getItem('userId');
   const navigate = useNavigate();
 
   if (!token) {
