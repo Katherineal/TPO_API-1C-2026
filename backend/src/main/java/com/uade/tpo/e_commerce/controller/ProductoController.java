@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 
 
 
+//REST controller para manejar las peticiones HTTP relacionadas con los productos
 
 @RestController
 // para acceder a este controlador, la URL base será /api/productos

@@ -16,7 +16,7 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class AuthenticationService {
-
+// encriptacion Bcrypt para almacenar contraseñas de manera segura, evitando que se guarden en texto plano en la base de datos.
         private final UsuarioRepository repository;
         private final PasswordEncoder passwordEncoder;
         private final JwtService jwtService;

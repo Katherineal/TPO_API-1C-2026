@@ -18,6 +18,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.uade.tpo.e_commerce.dto.PedidoDto;
 import com.uade.tpo.e_commerce.service.PedidoService;
 
+//REST controller para manejar las peticiones HTTP relacionadas con los pedidos
+
 @RestController
 @RequestMapping("/api/pedidos")
 public class PedidoController {
@@ -25,6 +27,7 @@ public class PedidoController {
     @Autowired
     private PedidoService pedidoService;
 
+    // GETMAPPING Maneja solo codigos de estado HTTP como 200 OK, 201 CREATED, 204 NO CONTENT, etc. en lugar de devolver objetos directamente
     // Solo ADMIN puede ver todos los pedidos
     @GetMapping
     @PreAuthorize("hasRole('ADMIN')")

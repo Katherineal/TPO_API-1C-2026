@@ -35,6 +35,7 @@ public class SecurityConfig {
     private final JwtAuthenticationFilter jwtAuthFilter;
     private final AuthenticationProvider authenticationProvider;
 
+//SecurityfilterChain aplica stateless authentication con JWT, configurando CORS, CSRF, y autorizaciones para diferentes endpoints de la API.
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 

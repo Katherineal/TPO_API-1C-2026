@@ -14,6 +14,8 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+// ORM para mapear la clase Usuario a una tabla en la base de datos, con campos como id, nombre, apellido, email, password, role, y una relación OneToMany con pedidos. Implementa UserDetails para integración con Spring Security.
+// relaciones con cardinalidad (one to many, many to one, many to many )
 @Entity
 @Table(name = "usuarios")
 public class Usuario implements UserDetails {

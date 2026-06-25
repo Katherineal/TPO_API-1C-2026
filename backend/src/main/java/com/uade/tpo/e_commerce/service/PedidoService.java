@@ -19,7 +19,7 @@ import com.uade.tpo.e_commerce.repository.ProductoRepository;
 import com.uade.tpo.e_commerce.repository.UsuarioRepository;
 
 import jakarta.transaction.Transactional;
-
+// TRANSACTIONAL para asegurar que las operaciones de base de datos se ejecuten dentro de una transacción, garantizando la integridad de los datos.
 @Service
 @Transactional
 public class PedidoService {
