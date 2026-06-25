@@ -15,9 +15,9 @@ function Carrito() {
     cartTotal = 0
   } = useCart();
 
-  const token = localStorage.getItem("token");
-
-  const isLoggedIn = !!token;
+  // Revisamos si hay un userId en vez del token, ya que el token viaja por cookie HttpOnly
+  const userId = localStorage.getItem("userId");
+  const isLoggedIn = !!userId;
 
   const shipping = cartTotal > 50 ? 0 : 9.99;
   const total = cartTotal + shipping;

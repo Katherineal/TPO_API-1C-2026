@@ -34,7 +34,7 @@ function ProductDetail() {
     useState(1);
 
   const token =
-    localStorage.getItem('token');
+    localStorage.getItem('userId');
 
   const isFav =
     isFavorite(parseInt(id));

@@ -24,7 +24,7 @@ function ProductCard({ product }) {
         useState(false);
 
     const token =
-        localStorage.getItem("token");
+        localStorage.getItem("userId");
 
     const favorite =
         isFavorite(product.id);
