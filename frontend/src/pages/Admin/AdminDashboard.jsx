@@ -42,35 +42,11 @@ function AdminDashboard() {
 
     const loadProducts = async () => {
         try {
-            // Bypass del backend para usar los productos premium en el panel
-            const fallbackProducts = [
-                { id: 1, nombre: "iPhone 15 Pro Max", precio: 1199.00, stock: 15, imagen_url: "https://images.unsplash.com/photo-1695048133142-1a20484d2569?q=80&w=1000&auto=format&fit=crop" },
-                { id: 2, nombre: "MacBook Pro M3 Max", precio: 2499.00, stock: 8, imagen_url: "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?q=80&w=1000&auto=format&fit=crop" },
-                { id: 3, nombre: "AirPods Max", precio: 549.00, stock: 30, imagen_url: "https://images.unsplash.com/photo-1613040809024-b4ef7ba99bc3?q=80&w=1000&auto=format&fit=crop" },
-                { id: 4, nombre: "Apple Watch Ultra 2", precio: 799.00, stock: 22, imagen_url: "https://images.unsplash.com/photo-1678393529341-94fc31eaaf97?q=80&w=1000&auto=format&fit=crop" },
-                { id: 5, nombre: "iPad Pro M4", precio: 999.00, stock: 18, imagen_url: "https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?q=80&w=1000&auto=format&fit=crop" },
-                { id: 6, nombre: "Mac Studio", precio: 1999.00, stock: 5, imagen_url: "https://images.unsplash.com/photo-1655821568261-26c36f51f49e?q=80&w=1000&auto=format&fit=crop" },
-                { id: 7, nombre: "Pro Display XDR", precio: 4999.00, stock: 2, imagen_url: "https://images.unsplash.com/photo-1610945264803-c22b6272bc8e?q=80&w=1000&auto=format&fit=crop" },
-                { id: 8, nombre: "AirPods Pro 2", precio: 249.00, stock: 45, imagen_url: "https://images.unsplash.com/photo-1606220838315-056192d5e927?q=80&w=1000&auto=format&fit=crop" },
-                { id: 9, nombre: "HomePod", precio: 299.00, stock: 12, imagen_url: "https://images.unsplash.com/photo-1543512214-318c7553f230?q=80&w=1000&auto=format&fit=crop" },
-                { id: 10, nombre: "Magic Keyboard", precio: 99.00, stock: 60, imagen_url: "https://images.unsplash.com/photo-1587826693892-0b1e42b291db?q=80&w=1000&auto=format&fit=crop" },
-                { id: 11, nombre: "Magic Mouse", precio: 79.00, stock: 100, imagen_url: "https://images.unsplash.com/photo-1527814050087-17933a3832c6?q=80&w=1000&auto=format&fit=crop" },
-                { id: 12, nombre: "Apple TV 4K", precio: 129.00, stock: 35, imagen_url: "https://images.unsplash.com/photo-1593305841991-0537d6cb5e10?q=80&w=1000&auto=format&fit=crop" },
-                { id: 13, nombre: "Gorra Premium TechStore", precio: 29.00, stock: 200, imagen_url: "https://images.unsplash.com/photo-1588850561407-ed78c282e89b?q=80&w=1000&auto=format&fit=crop" }
-            ];
-            
-            // Tratamos de obtener la base de datos real para sumar los creados manualmente
-            try {
-                const dbProducts = await productService.getAll();
-                // Filtramos los de prueba feos (iphone, 1) y sumamos solo los manuales nuevos validos
-                const validCustomProducts = dbProducts.filter(p => p.nombre !== "iphone" && p.nombre !== "1");
-                setProducts([...fallbackProducts, ...validCustomProducts]);
-            } catch (err) {
-                setProducts(fallbackProducts);
-            }
-
+            const dbProducts = await productService.getAll();
+            setProducts(dbProducts);
         } catch (err) {
-            console.log(err);
+            console.log("Error cargando productos:", err);
+            setProducts([]);
         }
     };
 
@@ -180,7 +156,7 @@ function AdminDashboard() {
                         </tr>
                     </thead>
                     <tbody>
-                        {products.map((product) => {
+                        {products.map((product, index) => {
                             let stockStatus = 'in-stock';
                             if (product.stock === 0) {
                                 stockStatus = 'out-of-stock';
@@ -189,7 +165,7 @@ function AdminDashboard() {
                             }
 
                             return (
-                                <tr key={product.id}>
+                                <tr key={`${product.id}-${index}`}>
                                     <td className="id-cell">{product.id}</td>
                                     <td className="product-cell">
                                         <img src={product.imagen_url || "https://placehold.co/100"} alt={product.nombre} />
