@@ -5,6 +5,7 @@ import { login, clearError } from '../../store/slices/authSlice';
 import MainLayout from '../../layouts/MainLayout';
 import './Login.css';
 
+//aplicacion de usenavigate 
 function Login() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -60,6 +61,9 @@ function Login() {
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
+
+  //funciones asincronas tradicionales gatilladas por eventos 
+  // que invoca al await 
 
   const handleSubmit = async (e) => {
     e.preventDefault();

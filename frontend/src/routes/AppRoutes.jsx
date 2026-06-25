@@ -27,7 +27,8 @@ function AppRoutes() {
 
             <Route path="/favoritos" element={<Favoritos />} />
 
-            <Route path="/productos/:id" element={<ProductDetail />} />
+            <Route path="/productos/:id" element={<ProductDetail />} /> // enrutamiento dinamico para mostrar el detalle de un 
+            producto específico, usando el parámetro :id para identificar el producto
 
             <Route path="/perfil" element={<Perfil />} />
 

@@ -2,7 +2,7 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import API from "../services/api";
 
 // Thunks asíncronos para interactuar con el backend
-
+// createasyncthunk operaciones complejas de red 
 export const fetchCart = createAsyncThunk(
     "cart/fetchCart",
     async (userId, { rejectWithValue }) => {

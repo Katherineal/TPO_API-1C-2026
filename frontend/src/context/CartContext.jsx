@@ -12,7 +12,7 @@ const CartContext = createContext();
 
 export function CartProvider({ children }) {
     const dispatch = useDispatch();
-    const cartItems = useSelector((state) => state.cart.items);
+    const cartItems = useSelector((state) => state.cart.items); // UseSelector para obtener los items del carrito desde el estado global
     const loading = useSelector((state) => state.cart.loading);
 
     const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);

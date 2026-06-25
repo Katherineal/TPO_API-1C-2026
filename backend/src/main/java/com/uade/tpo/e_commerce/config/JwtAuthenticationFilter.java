@@ -28,7 +28,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
              HttpServletResponse response,
              FilterChain filterChain
     ) throws ServletException, IOException {
-        // Profe, acá buscamos el token dentro de las cookies enviadas por el navegador
+        // Aplicacion de httpOnly, token dentro de las cookies enviadas por el navegador
         String jwt = null;
         final String userEmail;
 
