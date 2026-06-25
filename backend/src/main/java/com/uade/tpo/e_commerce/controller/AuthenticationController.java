@@ -41,7 +41,7 @@ public class AuthenticationController {
                 .secure(false) 
                 .path("/")
                 .maxAge(15 * 60) 
-                .sameSite("Lax")
+                .sameSite("Strict")
                 .build();
 
         
@@ -61,7 +61,7 @@ public class AuthenticationController {
                 .secure(false) // Igual que en el login, falso para localhost
                 .path("/")
                 .maxAge(0) // Destruye la cookie inmediatamente
-                .sameSite("Lax")
+                .sameSite("Strict")
                 .build();
 
         response.addHeader(org.springframework.http.HttpHeaders.SET_COOKIE, cookie.toString());
