@@ -6,23 +6,49 @@
   --text-primary: #2c2a26;    /* dark warm gray/charcoal */
   --text-secondary: #5c5850;  /* medium warm gray */
   --text-muted: #a39c90;      /* light warm gray */
-  
+
   --border-color: #e6e2d8;    /* beige border */
-  --border-color-hover: #d1ccbf; 
-  
+  --border-color-hover: #d1ccbf;
+
   --card-bg: #ffffff;
-  
+
   --primary-color: #1a1917;   /* almost black */
   --primary-hover: #3b3732;
-  
+
   --radius-sm: 8px;
   --radius-md: 12px;
   --radius-lg: 16px;
-  
+
   /* Soft, realistic shadows instead of harsh drop-shadows */
   --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
   --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
   --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+
+  /* Theme transition */
+  --theme-transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+
+[data-theme="dark"] {
+  --bg-color: #1a1917;
+  --text-primary: #f0ece4;
+  --text-secondary: #b8b0a4;
+  --text-muted: #7a7268;
+
+  --border-color: #3a3830;
+  --border-color-hover: #4a4840;
+
+  --card-bg: #252320;
+
+  --primary-color: #f0ece4;
+  --primary-hover: #d8d0c8;
+
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.3);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.4), 0 2px 4px -2px rgb(0 0 0 / 0.3);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.4), 0 4px 6px -4px rgb(0 0 0 / 0.3);
+}
+
+html {
+  transition: var(--theme-transition);
 }
 
 body {

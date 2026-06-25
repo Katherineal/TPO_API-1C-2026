@@ -9,6 +9,7 @@ import App from "./App";
 import { BrowserRouter } from "react-router-dom";
 import { CartProvider } from "./context/CartContext";
 import { FavoriteProvider } from "./context/FavoriteContext";
+import { ThemeProvider } from "./context/ThemeContext";
 
 ReactDOM.createRoot(
     document.getElementById("root")
@@ -17,11 +18,13 @@ ReactDOM.createRoot(
     <React.StrictMode>
         <Provider store={store}>
             <BrowserRouter>
-                <CartProvider>
-                    <FavoriteProvider>
-                        <App />
-                    </FavoriteProvider>
-                </CartProvider>
+                <ThemeProvider>
+                    <CartProvider>
+                        <FavoriteProvider>
+                            <App />
+                        </FavoriteProvider>
+                    </CartProvider>
+                </ThemeProvider>
             </BrowserRouter>
         </Provider>
     </React.StrictMode>
