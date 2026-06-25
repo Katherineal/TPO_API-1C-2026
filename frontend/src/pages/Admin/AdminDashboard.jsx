@@ -1,25 +1,18 @@
 import { useState, useEffect } from "react";
 
-import productService
-    from "../../services/productService";
+import productService from "../../services/productService";
 
 import "./AdminDashboard.css";
 import MainLayout from "../../layouts/MainLayout";
 
 function AdminDashboard() {
 
-    const [products, setProducts] =
-        useState([]);
+    const [products, setProducts] = useState([]);
 
-    const [editingId, setEditingId] =
-        useState(null);
-
-    const [stock, setStock] =
-        useState("");
-
-    // --- NUEVOS ESTADOS PARA CREAR PRODUCTO ---
-    const [showAddForm, setShowAddForm] = useState(false);
-    const [newProduct, setNewProduct] = useState({
+    const [showModal, setShowModal] = useState(false);
+    const [modalMode, setModalMode] = useState("create");
+    const [currentProductId, setCurrentProductId] = useState(null);
+    const [formData, setFormData] = useState({
         nombre: "",
         descripcion: "",
         precio: "",
@@ -51,40 +44,59 @@ function AdminDashboard() {
     };
 
     const handleEdit = (product) => {
-        setEditingId(product.id);
-        setStock(product.stock);
+        setModalMode("edit");
+        setCurrentProductId(product.id);
+        setFormData({
+            nombre: product.nombre,
+            descripcion: product.descripcion,
+            precio: product.precio,
+            stock: product.stock,
+            imagen_url: product.imagen_url || ""
+        });
+        setShowModal(true);
     };
 
-    const handleSave = async (id) => {
-        try {
-            await productService.updateStock(id, stock);
-            setEditingId(null);
-            loadProducts();
-        } catch (err) {
-            console.log(err);
+    const handleDelete = async (id) => {
+        if (window.confirm("¿Estás seguro de que deseas eliminar este producto?")) {
+            try {
+                await productService.delete(id);
+                loadProducts();
+            } catch (err) {
+                console.log(err);
+                alert("Error al eliminar el producto");
+            }
         }
     };
 
-    // --- LOGICA PARA GUARDAR PRODUCTO NUEVO ---
-    const handleAddProduct = async (e) => {
+    const handleSave = async (e) => {
         e.preventDefault();
         setIsSaving(true);
         try {
             const productToSave = {
-                ...newProduct,
-                precio: parseFloat(newProduct.precio),
-                stock: parseInt(newProduct.stock)
+                ...formData,
+                precio: parseFloat(formData.precio),
+                stock: parseInt(formData.stock)
             };
-            await productService.create(productToSave);
-            setShowAddForm(false);
-            setNewProduct({ nombre: "", descripcion: "", precio: "", stock: "", imagen_url: "" });
-            loadProducts(); // Recargar la tabla
+            if (modalMode === "create") {
+                await productService.create(productToSave);
+            } else {
+                await productService.update(currentProductId, productToSave);
+            }
+            setShowModal(false);
+            setFormData({ nombre: "", descripcion: "", precio: "", stock: "", imagen_url: "" });
+            loadProducts();
         } catch (err) {
-            console.log("Error creando producto:", err);
-            alert("No se pudo crear el producto. ¿Iniciaste sesión como ADMIN?");
+            console.log("Error guardando producto:", err);
+            alert("No se pudo guardar el producto. Verifica la consola.");
         } finally {
             setIsSaving(false);
         }
+    };
+
+    const openCreateModal = () => {
+        setModalMode("create");
+        setFormData({ nombre: "", descripcion: "", precio: "", stock: "", imagen_url: "" });
+        setShowModal(true);
     };
 
     return (
@@ -97,7 +109,7 @@ function AdminDashboard() {
                         <p>Gestiona productos y stock</p>
                     </div>
                     <button 
-                        onClick={() => setShowAddForm(true)} 
+                        onClick={openCreateModal} 
                         className="save-btn"
                         style={{ padding: '12px 24px', fontSize: '1rem' }}
                     >
@@ -106,38 +118,38 @@ function AdminDashboard() {
                 </div>
 
                 {/* MODAL OVERLAY */}
-                {showAddForm && (
+                {showModal && (
                     <div className="modal-overlay">
                         <div className="modal-content">
                             <div className="modal-header">
-                                <h3>Crear Nuevo Producto</h3>
-                                <button onClick={() => setShowAddForm(false)} className="close-modal-btn">
+                                <h3>{modalMode === 'create' ? 'Crear Nuevo Producto' : 'Editar Producto'}</h3>
+                                <button onClick={() => setShowModal(false)} className="close-modal-btn">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
                                 </button>
                             </div>
-                            <form onSubmit={handleAddProduct} className="modal-form">
+                            <form onSubmit={handleSave} className="modal-form">
                                 <div className="form-group">
                                     <label>Nombre del producto</label>
-                                    <input required placeholder="Ej: AirPods Pro" value={newProduct.nombre} onChange={e => setNewProduct({...newProduct, nombre: e.target.value})} className="modal-input" />
+                                    <input required placeholder="Ej: AirPods Pro" value={formData.nombre} onChange={e => setFormData({...formData, nombre: e.target.value})} className="modal-input" />
                                 </div>
                                 <div className="form-group">
                                     <label>Precio ($)</label>
-                                    <input required type="number" step="0.01" placeholder="Ej: 249.00" value={newProduct.precio} onChange={e => setNewProduct({...newProduct, precio: e.target.value})} className="modal-input" />
+                                    <input required type="number" step="0.01" placeholder="Ej: 249.00" value={formData.precio} onChange={e => setFormData({...formData, precio: e.target.value})} className="modal-input" />
                                 </div>
                                 <div className="form-group">
                                     <label>Stock Inicial</label>
-                                    <input required type="number" placeholder="Ej: 50" value={newProduct.stock} onChange={e => setNewProduct({...newProduct, stock: e.target.value})} className="modal-input" />
+                                    <input required type="number" placeholder="Ej: 50" value={formData.stock} onChange={e => setFormData({...formData, stock: e.target.value})} className="modal-input" />
                                 </div>
                                 <div className="form-group">
                                     <label>URL de la Imagen</label>
-                                    <input placeholder="https://unsplash.com/..." value={newProduct.imagen_url} onChange={e => setNewProduct({...newProduct, imagen_url: e.target.value})} className="modal-input" />
+                                    <input placeholder="https://unsplash.com/..." value={formData.imagen_url} onChange={e => setFormData({...formData, imagen_url: e.target.value})} className="modal-input" />
                                 </div>
                                 <div className="form-group full-width">
                                     <label>Descripción breve</label>
-                                    <textarea required placeholder="Características principales del producto..." value={newProduct.descripcion} onChange={e => setNewProduct({...newProduct, descripcion: e.target.value})} className="modal-input modal-textarea" />
+                                    <textarea required placeholder="Características principales del producto..." value={formData.descripcion} onChange={e => setFormData({...formData, descripcion: e.target.value})} className="modal-input modal-textarea" />
                                 </div>
                                 <button disabled={isSaving} type="submit" className="save-btn full-width" style={{ padding: '16px', fontSize: '1rem', marginTop: '10px' }}>
-                                    {isSaving ? 'Guardando...' : 'Guardar Producto'}
+                                    {isSaving ? 'Guardando...' : (modalMode === 'create' ? 'Guardar Producto' : 'Actualizar Producto')}
                                 </button>
                             </form>
                         </div>
@@ -173,16 +185,7 @@ function AdminDashboard() {
                                     </td>
                                     <td className="price-cell" data-label="Precio">${product.precio}</td>
                                     <td className="stock-cell" data-label="Stock">
-                                        {editingId === product.id ? (
-                                            <input
-                                                type="number"
-                                                className="stock-input"
-                                                value={stock}
-                                                onChange={(e) => setStock(e.target.value)}
-                                            />
-                                        ) : (
-                                            <span className="stock-value">{product.stock}</span>
-                                        )}
+                                        <span className="stock-value">{product.stock}</span>
                                     </td>
                                     <td data-label="Estado" className="no-label">
                                         <span className={`status-badge ${stockStatus}`}>
@@ -192,20 +195,12 @@ function AdminDashboard() {
                                         </span>
                                     </td>
                                     <td className="action-buttons no-label" data-label="Acciones">
-                                        {editingId === product.id ? (
-                                            <>
-                                                <button className="save-btn" onClick={() => handleSave(product.id)}>
-                                                    Guardar
-                                                </button>
-                                                <button className="cancel-btn" onClick={() => setEditingId(null)}>
-                                                    Cancelar
-                                                </button>
-                                            </>
-                                        ) : (
-                                            <button className="edit-btn" onClick={() => handleEdit(product)}>
-                                                Editar
-                                            </button>
-                                        )}
+                                        <button className="edit-btn" onClick={() => handleEdit(product)}>
+                                            Editar
+                                        </button>
+                                        <button className="cancel-btn" style={{ marginLeft: '10px' }} onClick={() => handleDelete(product.id)}>
+                                            Eliminar
+                                        </button>
                                     </td>
                                 </tr>
                             );
