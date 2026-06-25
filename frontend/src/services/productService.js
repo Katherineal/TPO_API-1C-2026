@@ -39,7 +39,12 @@ const productService = {
             );
 
         return response.data;
-    }
+    },
+    delete: async (productId) => {
+    const response = await API.delete(`/api/productos/${productId}`);
+    return response.data;
+},
 };
+
 
 export default productService;

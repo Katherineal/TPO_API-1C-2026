@@ -178,7 +178,8 @@
 
 .edit-btn,
 .save-btn,
-.cancel-btn {
+.cancel-btn,
+.delete-btn {
   padding: 10px 20px;
   border-radius: 30px;
   font-size: 0.8rem;
@@ -216,6 +217,18 @@
 .cancel-btn:hover {
   border-color: #111;
   color: #111;
+}
+
+.delete-btn {
+  background-color: #fff;
+  color: #d92d20;
+  border: 1px solid #fda29b;
+}
+
+.delete-btn:hover {
+  background-color: #d92d20;
+  color: #fff;
+  border-color: #d92d20;
 }
 
 /* ===== Responsive ===== */
@@ -268,7 +281,7 @@
     margin-top: 10px;
   }
   
-  .edit-btn, .save-btn, .cancel-btn {
+  .edit-btn, .save-btn, .cancel-btn, .delete-btn {
     width: 100%;
     text-align: center;
   }

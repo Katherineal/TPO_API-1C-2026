@@ -29,7 +29,13 @@ public class Producto {
     @Column(length = 2048)
     private String imagenUrl;
 
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToMany(
+        fetch = FetchType.LAZY,
+        cascade = {
+            CascadeType.PERSIST,
+            CascadeType.MERGE,
+        }
+    )
     @JoinTable(
         name = "productos_categorias",
         joinColumns = @JoinColumn(name = "producto_id"),

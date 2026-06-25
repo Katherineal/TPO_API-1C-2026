@@ -18,18 +18,21 @@ function AdminDashboard() {
         useState("");
 
     // --- NUEVOS ESTADOS PARA CREAR PRODUCTO ---
+    const [categorias, setCategorias] = useState([]);
     const [showAddForm, setShowAddForm] = useState(false);
     const [newProduct, setNewProduct] = useState({
         nombre: "",
         descripcion: "",
         precio: "",
         stock: "",
-        imagen_url: ""
+        imagen_url: "",
+        categorias: []
     });
     const [isSaving, setIsSaving] = useState(false);
 
     useEffect(() => {
         verificarAdmin();
+        loadCategorias();
         loadProducts();
     }, []);
 
@@ -41,38 +44,36 @@ function AdminDashboard() {
     };
 
     const loadProducts = async () => {
-        try {
-            // Bypass del backend para usar los productos premium en el panel
-            const fallbackProducts = [
-                { id: 1, nombre: "iPhone 15 Pro Max", precio: 1199.00, stock: 15, imagen_url: "https://images.unsplash.com/photo-1695048133142-1a20484d2569?q=80&w=1000&auto=format&fit=crop" },
-                { id: 2, nombre: "MacBook Pro M3 Max", precio: 2499.00, stock: 8, imagen_url: "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?q=80&w=1000&auto=format&fit=crop" },
-                { id: 3, nombre: "AirPods Max", precio: 549.00, stock: 30, imagen_url: "https://images.unsplash.com/photo-1613040809024-b4ef7ba99bc3?q=80&w=1000&auto=format&fit=crop" },
-                { id: 4, nombre: "Apple Watch Ultra 2", precio: 799.00, stock: 22, imagen_url: "https://images.unsplash.com/photo-1678393529341-94fc31eaaf97?q=80&w=1000&auto=format&fit=crop" },
-                { id: 5, nombre: "iPad Pro M4", precio: 999.00, stock: 18, imagen_url: "https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?q=80&w=1000&auto=format&fit=crop" },
-                { id: 6, nombre: "Mac Studio", precio: 1999.00, stock: 5, imagen_url: "https://images.unsplash.com/photo-1655821568261-26c36f51f49e?q=80&w=1000&auto=format&fit=crop" },
-                { id: 7, nombre: "Pro Display XDR", precio: 4999.00, stock: 2, imagen_url: "https://images.unsplash.com/photo-1610945264803-c22b6272bc8e?q=80&w=1000&auto=format&fit=crop" },
-                { id: 8, nombre: "AirPods Pro 2", precio: 249.00, stock: 45, imagen_url: "https://images.unsplash.com/photo-1606220838315-056192d5e927?q=80&w=1000&auto=format&fit=crop" },
-                { id: 9, nombre: "HomePod", precio: 299.00, stock: 12, imagen_url: "https://images.unsplash.com/photo-1543512214-318c7553f230?q=80&w=1000&auto=format&fit=crop" },
-                { id: 10, nombre: "Magic Keyboard", precio: 99.00, stock: 60, imagen_url: "https://images.unsplash.com/photo-1587826693892-0b1e42b291db?q=80&w=1000&auto=format&fit=crop" },
-                { id: 11, nombre: "Magic Mouse", precio: 79.00, stock: 100, imagen_url: "https://images.unsplash.com/photo-1527814050087-17933a3832c6?q=80&w=1000&auto=format&fit=crop" },
-                { id: 12, nombre: "Apple TV 4K", precio: 129.00, stock: 35, imagen_url: "https://images.unsplash.com/photo-1593305841991-0537d6cb5e10?q=80&w=1000&auto=format&fit=crop" },
-                { id: 13, nombre: "Gorra Premium TechStore", precio: 29.00, stock: 200, imagen_url: "https://images.unsplash.com/photo-1588850561407-ed78c282e89b?q=80&w=1000&auto=format&fit=crop" }
-            ];
-            
-            // Tratamos de obtener la base de datos real para sumar los creados manualmente
-            try {
-                const dbProducts = await productService.getAll();
-                // Filtramos los de prueba feos (iphone, 1) y sumamos solo los manuales nuevos validos
-                const validCustomProducts = dbProducts.filter(p => p.nombre !== "iphone" && p.nombre !== "1");
-                setProducts([...fallbackProducts, ...validCustomProducts]);
-            } catch (err) {
-                setProducts(fallbackProducts);
-            }
-
-        } catch (err) {
-            console.log(err);
-        }
+    try {
+        const dbProducts = await productService.getAll();
+        setProducts(dbProducts);
+    } catch (err) {
+        console.log("Error cargando productos:", err);
+        setProducts([]);
+    }
     };
+
+    const loadCategorias = async () => {
+
+    try {
+
+        const response = await fetch(
+            "http://localhost:8080/api/categorias"
+        );
+
+        if (!response.ok) {
+            throw new Error("Error cargando categorías");
+        }
+
+        const data = await response.json();
+
+        setCategorias(data);
+
+    } catch (error) {
+
+        console.error(error);
+    }
+};
 
     const handleEdit = (product) => {
         setEditingId(product.id);
@@ -89,15 +90,32 @@ function AdminDashboard() {
         }
     };
 
+    // --- LOGICA PARA ELIMINAR PRODUCTO ---
+    const handleDelete = async (id) => {
+        const confirmar = window.confirm("¿Seguro que querés eliminar este producto? Esta acción no se puede deshacer.");
+        if (!confirmar) return;
+
+        try {
+            await productService.delete(id);
+            loadProducts(); // Recargar la tabla
+        } catch (err) {
+            console.log("Error eliminando producto:", err);
+            alert("No se pudo eliminar el producto. ¿Iniciaste sesión como ADMIN?");
+        }
+    };
+
     // --- LOGICA PARA GUARDAR PRODUCTO NUEVO ---
     const handleAddProduct = async (e) => {
         e.preventDefault();
         setIsSaving(true);
         try {
             const productToSave = {
-                ...newProduct,
+                nombre: newProduct.nombre,
+                descripcion: newProduct.descripcion,
                 precio: parseFloat(newProduct.precio),
-                stock: parseInt(newProduct.stock)
+                stock: parseInt(newProduct.stock),
+                imagen_url: newProduct.imagenUrl,
+                categorias: newProduct.categorias
             };
             await productService.create(productToSave);
             setShowAddForm(false);
@@ -157,6 +175,59 @@ function AdminDashboard() {
                                     <input placeholder="https://unsplash.com/..." value={newProduct.imagen_url} onChange={e => setNewProduct({...newProduct, imagen_url: e.target.value})} className="modal-input" />
                                 </div>
                                 <div className="form-group full-width">
+                                    <label>Categorías</label>
+
+                                    <div style={{
+                                        display: "flex",
+                                        flexWrap: "wrap",
+                                        gap: "10px",
+                                        marginTop: "10px"
+                                    }}>
+                                        {categorias.map((categoria) => (
+                                            <label
+                                                key={categoria.id}
+                                                style={{
+                                                    display: "flex",
+                                                    alignItems: "center",
+                                                    gap: "5px"
+                                                }}
+                                            >
+                                                <input
+                                                    type="checkbox"
+                                                    checked={
+                                                        newProduct.categorias.some(
+                                                            c => c.id === categoria.id
+                                                        )
+                                                    }
+                                                    onChange={(e) => {
+                                                        if (e.target.checked) {
+                                                            setNewProduct({
+                                                                ...newProduct,
+                                                                categorias: [
+                                                                    ...newProduct.categorias,
+                                                                    { id: categoria.id }
+                                                                ]
+                                                            });
+
+                                                        } else {
+
+                                                            setNewProduct({
+                                                                ...newProduct,
+                                                                categorias:
+                                                                    newProduct.categorias.filter(
+                                                                        c => c.id !== categoria.id
+                                                                    )
+                                                            });
+                                                        }
+                                                    }}
+                                                />
+
+                                                {categoria.nombre}
+                                            </label>
+                                        ))}
+                                    </div>
+                                </div>
+                                <div className="form-group full-width">
                                     <label>Descripción breve</label>
                                     <textarea required placeholder="Características principales del producto..." value={newProduct.descripcion} onChange={e => setNewProduct({...newProduct, descripcion: e.target.value})} className="modal-input modal-textarea" />
                                 </div>
@@ -167,7 +238,6 @@ function AdminDashboard() {
                         </div>
                     </div>
                 )}
-
                 <table className="products-table">
                     <thead>
                         <tr>
@@ -226,9 +296,14 @@ function AdminDashboard() {
                                                 </button>
                                             </>
                                         ) : (
-                                            <button className="edit-btn" onClick={() => handleEdit(product)}>
-                                                Editar
-                                            </button>
+                                            <>
+                                                <button className="edit-btn" onClick={() => handleEdit(product)}>
+                                                    Editar
+                                                </button>
+                                                <button className="delete-btn" onClick={() => handleDelete(product.id)}>
+                                                    Eliminar
+                                                </button>
+                                            </>
                                         )}
                                     </td>
                                 </tr>

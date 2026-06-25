@@ -1,9 +1,9 @@
 package com.uade.tpo.e_commerce.repository;
-
+import org.springframework.data.jpa.repository.Modifying;
 import java.util.List;
-
 import org.springframework.data.jpa.repository.JpaRepository;
-
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import com.uade.tpo.e_commerce.model.Producto;
 
 public interface ProductoRepository extends JpaRepository<Producto, Long> {
@@ -18,7 +18,8 @@ public interface ProductoRepository extends JpaRepository<Producto, Long> {
      */
     List<Producto> findAllByOrderByNombreAsc();
 
-    //query methods personalizados pueden ser definidos aquí, por ejemplo:
-    //findByNombre(String nombre); 
-    //findByPrecioBetween(Double minPrecio, Double maxPrecio);
+    
+    @Modifying
+    @Query(value = "DELETE FROM productos_categorias WHERE producto_id = :productoId", nativeQuery = true)
+    void deleteCategoriasByProductoId(@Param("productoId") Long productoId);
 }

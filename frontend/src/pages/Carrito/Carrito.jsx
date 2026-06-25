@@ -16,7 +16,6 @@ function Carrito() {
   } = useCart();
 
   const token = localStorage.getItem("token");
-
   const isLoggedIn = !!token;
 
   const shipping = cartTotal > 50 ? 0 : 9.99;
