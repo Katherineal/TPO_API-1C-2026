@@ -1,19 +1,31 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 
 :root {
-  /* Boutique Beige color palette for a professional, warm look */
-  --bg-color: #f5f3ef;        /* soft beige */
-  --text-primary: #2c2a26;    /* dark warm gray/charcoal */
-  --text-secondary: #5c5850;  /* medium warm gray */
-  --text-muted: #a39c90;      /* light warm gray */
-
-  --border-color: #e6e2d8;    /* beige border */
-  --border-color-hover: #d1ccbf;
-
+  /* Core layout background and text */
+  --bg-color: #ffffff;
+  --bg-secondary: #f8fafc;
   --card-bg: #ffffff;
 
-  --primary-color: #1a1917;   /* almost black */
-  --primary-hover: #3b3732;
+  --text-primary: #0f172a;
+  --text-secondary: #475569;
+  --text-muted: #94a3b8;
+
+  /* Accent color - premium indigo/purple from the reference image */
+  --primary-color: #5850ec;
+  --primary-hover: #4f46e5;
+  --accent-color: #5850ec;
+  --accent-hover: #4f46e5;
+
+  /* Borders and hover states */
+  --border-color: #e2e8f0;
+  --border-color-hover: #cbd5e1;
+  --border-light: #f1f5f9;
+  --hover-color: #f1f5f9;
+
+  /* Compat variables for other CSS files that use different names */
+  --text-color: var(--text-primary);
+  --secondary-color: var(--text-secondary);
+  --text-light: var(--text-muted);
 
   --radius-sm: 8px;
   --radius-md: 12px;
@@ -21,26 +33,36 @@
 
   /* Soft, realistic shadows instead of harsh drop-shadows */
   --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.05), 0 2px 4px -2px rgb(0 0 0 / 0.05);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.05), 0 4px 6px -4px rgb(0 0 0 / 0.05);
 
   /* Theme transition */
   --theme-transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
 }
 
 [data-theme="dark"] {
-  --bg-color: #1a1917;
-  --text-primary: #f0ece4;
-  --text-secondary: #b8b0a4;
-  --text-muted: #7a7268;
+  --bg-color: #09080f;
+  --bg-secondary: #0f0e1a;
+  --card-bg: #12111f;
 
-  --border-color: #3a3830;
-  --border-color-hover: #4a4840;
+  --text-primary: #f9fafb;
+  --text-secondary: #cbd5e1;
+  --text-muted: #94a3b8;
 
-  --card-bg: #252320;
+  --primary-color: #6366f1;
+  --primary-hover: #818cf8;
+  --accent-color: #6366f1;
+  --accent-hover: #818cf8;
 
-  --primary-color: #f0ece4;
-  --primary-hover: #d8d0c8;
+  --border-color: #1f1d2f;
+  --border-color-hover: #2e2a44;
+  --border-light: #161527;
+  --hover-color: #161527;
+
+  /* Compat variables */
+  --text-color: var(--text-primary);
+  --secondary-color: var(--text-secondary);
+  --text-light: var(--text-muted);
 
   --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.3);
   --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.4), 0 2px 4px -2px rgb(0 0 0 / 0.3);
