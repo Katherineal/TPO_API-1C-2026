@@ -16,6 +16,7 @@ public class ProductoDto {
     private String descripcion;
     private Double precio;
     private Integer stock;
+    @com.fasterxml.jackson.annotation.JsonProperty("imagen_url")
     private String imagenUrl;
     private List<CategoriaDto> categorias;
 }
