@@ -9,7 +9,7 @@
 /* ===== LOADING & ERROR STATES ===== */
 .productos-page > p {
   font-size: 1rem;
-  color: #666;
+  color: var(--text-secondary);
   text-align: center;
   padding: 3rem 0;
 }
@@ -21,7 +21,7 @@
   gap: 1.5rem;
   margin-bottom: 3rem;
   padding: 1rem 0;
-  border-bottom: 1px solid rgba(0,0,0,0.05);
+  border-bottom: 1px solid var(--border-color);
 }
 
 .filter-section {
@@ -36,7 +36,7 @@
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 1.5px;
-  color: #888;
+  color: var(--text-muted);
 }
 
 /* ===== SEARCH INPUT ===== */
@@ -61,17 +61,17 @@
   border: none;
   border-bottom: 2px solid transparent;
   background: transparent;
-  color: #111;
+  color: var(--text-primary);
   transition: all 0.3s ease;
   outline: none;
 }
 
 .search-input:focus {
-  border-bottom-color: #111;
+  border-bottom-color: var(--primary-color);
 }
 
 .search-input::placeholder {
-  color: #ccc;
+  color: var(--text-muted);
 }
 
 /* ===== CATEGORY LIST ===== */
@@ -88,7 +88,7 @@
   padding: 0.5rem 1rem;
   font-size: 0.85rem;
   font-weight: 600;
-  color: #666;
+  color: var(--text-secondary);
   background: transparent;
   border: none;
   border-radius: 30px;
@@ -99,12 +99,12 @@
 }
 
 .category-btn:hover {
-  color: #111;
-  background: rgba(0,0,0,0.04);
+  color: var(--text-primary);
+  background: var(--hover-color);
 }
 
 .category-btn.active {
-  background: #111;
+  background: var(--primary-color);
   color: #fff;
 }
 
@@ -115,9 +115,9 @@
   font-size: 0.9rem;
   font-weight: 600;
   border: none;
-  border-bottom: 2px solid rgba(0,0,0,0.1);
+  border-bottom: 2px solid var(--border-color);
   background: transparent;
-  color: #111;
+  color: var(--text-primary);
   cursor: pointer;
   transition: all 0.3s ease;
   text-transform: uppercase;
@@ -126,7 +126,7 @@
 }
 
 .sort-select:focus {
-  border-bottom-color: #111;
+  border-bottom-color: var(--primary-color);
 }
 
 /* ===== TOOLBAR ===== */
@@ -140,7 +140,7 @@
 
 .productos-count {
   font-size: 0.85rem;
-  color: #888;
+  color: var(--text-muted);
   text-transform: uppercase;
   letter-spacing: 1px;
 }
@@ -156,7 +156,7 @@
 .no-products {
   text-align: center;
   padding: 4rem 2rem;
-  background: rgba(0,0,0,0.02);
+  background: var(--bg-secondary);
   border-radius: 20px;
   grid-column: 1 / -1;
 }
@@ -174,13 +174,13 @@
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  color: #111;
+  color: var(--text-primary);
 }
 
 .no-products p {
   margin: 0;
   font-size: 0.9375rem;
-  color: #666;
+  color: var(--text-secondary);
 }
 
 /* ===== RESPONSIVE ===== */

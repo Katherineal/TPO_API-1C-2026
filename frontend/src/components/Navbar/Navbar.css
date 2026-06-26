@@ -304,3 +304,14 @@
 .mobile-link:last-child {
   border-bottom: none;
 }
+
+/* ========== THEME TOGGLE ========== */
+.theme-toggle-btn {
+  color: var(--text-primary);
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.theme-toggle-btn:hover {
+  opacity: 0.6;
+  transform: rotate(15deg) translateY(-1px);
+}

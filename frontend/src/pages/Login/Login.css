@@ -1,22 +1,12 @@
-/* ===== CSS Variables ===== */
-:root {
-  --bg-color: #ffffff;
-  --text-color: #000000;
-  --text-light: #666666;
-  --border-color: #e0e0e0;
-  --border-light: #f0f0f0;
-  --hover-color: #f5f5f5;
-  --error-color: #dc2626;
-  --transition-fast: 0.2s ease;
-}
-
 /* ===== Auth Page ===== */
 .auth-page {
+  --error-color: #dc2626;
+  --transition-fast: 0.2s ease;
   min-height: calc(100vh - 70px);
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: #f5f5f5;
+  background-color: var(--bg-secondary);
   padding: 40px 16px;
 }
 
@@ -26,7 +16,7 @@
 }
 
 .auth-card {
-  background: var(--bg-color);
+  background: var(--card-bg);
   border: 1px solid var(--border-color);
   border-radius: 3px;
   padding: 32px 24px;
@@ -172,7 +162,7 @@
   width: 16px;
   height: 16px;
   cursor: pointer;
-  accent-color: var(--text-color);
+  accent-color: var(--primary-color);
 }
 
 .forgot-link {
@@ -195,13 +185,13 @@
   width: 100%;
   padding: 14px 24px;
   margin-top: 8px;
-  background-color: var(--text-color);
-  color: var(--bg-color);
+  background-color: var(--primary-color);
+  color: white;
   font-size: 0.9rem;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  border: 1px solid var(--text-color);
+  border: 1px solid var(--primary-color);
   border-radius: 3px;
   cursor: pointer;
   transition: all var(--transition-fast);
@@ -209,8 +199,9 @@
 }
 
 .btn-submit:hover:not(:disabled) {
-  background-color: var(--bg-color);
-  color: var(--text-color);
+  background-color: var(--primary-hover);
+  border-color: var(--primary-hover);
+  color: white;
 }
 
 .btn-submit:active:not(:disabled) {
@@ -233,8 +224,8 @@
   transform: translate(-50%, -50%);
   width: 16px;
   height: 16px;
-  border: 2px solid rgba(0, 0, 0, 0.2);
-  border-top-color: var(--text-color);
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  border-top-color: white;
   border-radius: 50%;
   animation: spin 0.8s linear infinite;
 }

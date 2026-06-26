@@ -1,32 +1,30 @@
-/* ===== Admin Page - Boutique Style ===== */
 .admin-page {
   min-height: calc(100vh - 100px);
-  background-color: #fafafa;
+  background-color: var(--bg-secondary);
   padding: 60px 24px;
   max-width: 1200px;
   margin: 0 auto;
   font-family: 'Inter', -apple-system, sans-serif;
 }
 
-/* ===== Admin Header ===== */
 .admin-header {
   margin-bottom: 40px;
   padding-bottom: 24px;
-  border-bottom: 1px solid rgba(0,0,0,0.05);
+  border-bottom: 1px solid var(--border-color);
 }
 
 .admin-header h1 {
   margin: 0 0 8px;
   font-size: 2rem;
   font-weight: 700;
-  color: #111;
+  color: var(--text-primary);
   letter-spacing: -0.5px;
 }
 
 .admin-header p {
   margin: 0;
   font-size: 0.95rem;
-  color: #666;
+  color: var(--text-secondary);
   letter-spacing: 0px;
 }
 
@@ -49,16 +47,16 @@
   text-align: left;
   font-weight: 600;
   font-size: 0.8rem;
-  color: #888;
+  color: var(--text-muted);
   text-transform: uppercase;
   letter-spacing: 1px;
-  border-bottom: 1px solid rgba(0,0,0,0.05);
+  border-bottom: 1px solid var(--border-color);
 }
 
 .products-table tbody tr {
-  background-color: #fff;
+  background-color: var(--card-bg);
   border-radius: 16px;
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.04);
+  box-shadow: var(--shadow-sm);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
@@ -72,7 +70,7 @@
   border: none;
   vertical-align: middle;
   font-size: 0.95rem;
-  color: #333;
+  color: var(--text-secondary);
 }
 
 .products-table td:first-child {
@@ -86,7 +84,7 @@
 
 /* ===== Table Cells ===== */
 .id-cell {
-  color: #aaa;
+  color: var(--text-muted);
   font-family: monospace;
   font-size: 0.85rem;
 }
@@ -102,20 +100,20 @@
   height: 70px;
   border-radius: 12px;
   object-fit: cover;
-  background-color: #f5f5f7;
-  border: 1px solid rgba(0,0,0,0.03);
-  box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  box-shadow: var(--shadow-sm);
 }
 
 .product-cell span {
   font-weight: 600;
-  color: #111;
+  color: var(--text-primary);
   font-size: 1.05rem;
 }
 
 .price-cell {
   font-weight: 600;
-  color: #111;
+  color: var(--text-primary);
 }
 
 .stock-cell {
@@ -124,24 +122,26 @@
 
 .stock-value {
   font-weight: 600;
-  color: #444;
+  color: var(--text-secondary);
 }
 
 .stock-input {
   width: 80px;
   padding: 10px 14px;
-  border: 1px solid #ddd;
+  border: 1px solid var(--border-color);
   border-radius: 8px;
   font-size: 0.95rem;
   font-weight: 600;
   text-align: center;
   outline: none;
   transition: all 0.2s ease;
+  background-color: var(--bg-color);
+  color: var(--text-primary);
 }
 
 .stock-input:focus {
-  border-color: #111;
-  box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.05);
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
 }
 
 /* ===== Status Badge ===== */
@@ -190,32 +190,32 @@
 }
 
 .edit-btn {
-  background-color: #f5f5f7;
-  color: #111;
+  background-color: var(--border-light);
+  color: var(--text-primary);
 }
 
 .edit-btn:hover {
-  background-color: #e5e5ea;
+  background-color: var(--border-color-hover);
 }
 
 .save-btn {
-  background-color: #111;
+  background-color: var(--primary-color);
   color: white;
 }
 
 .save-btn:hover:not(:disabled) {
-  background-color: #333;
+  background-color: var(--primary-hover);
 }
 
 .cancel-btn {
-  background-color: #fff;
-  border: 1px solid #ddd;
-  color: #666;
+  background-color: var(--card-bg);
+  border: 1px solid var(--border-color);
+  color: var(--text-secondary);
 }
 
 .cancel-btn:hover {
-  border-color: #111;
-  color: #111;
+  border-color: var(--text-primary);
+  color: var(--text-primary);
 }
 
 /* ===== Responsive ===== */
@@ -296,12 +296,13 @@
 }
 
 .modal-content {
-  background-color: white;
+  background-color: var(--card-bg);
+  border: 1px solid var(--border-color);
   padding: 40px;
   border-radius: 24px;
   width: 100%;
   max-width: 600px;
-  box-shadow: 0 24px 80px rgba(0,0,0,0.2);
+  box-shadow: var(--shadow-lg);
   transform: scale(0.95);
   animation: slideUp 0.3s ease forwards;
 }
@@ -322,7 +323,7 @@
   margin: 0;
   font-size: 1.5rem;
   font-weight: 700;
-  color: #111;
+  color: var(--text-primary);
   letter-spacing: -0.5px;
 }
 
@@ -340,8 +341,8 @@
 }
 
 .close-modal-btn:hover {
-  background-color: #f5f5f7;
-  color: #111;
+  background-color: var(--border-light);
+  color: var(--text-primary);
 }
 
 .modal-form {
@@ -359,24 +360,25 @@
 .form-group label {
   font-size: 0.85rem;
   font-weight: 600;
-  color: #555;
+  color: var(--text-secondary);
 }
 
 .modal-input {
   padding: 12px 16px;
-  border: 1px solid #ddd;
+  border: 1px solid var(--border-color);
   border-radius: 12px;
   font-size: 0.95rem;
   font-family: inherit;
   outline: none;
   transition: all 0.2s ease;
-  background-color: #fafafa;
+  background-color: var(--bg-color);
+  color: var(--text-primary);
 }
 
 .modal-input:focus {
-  border-color: #111;
-  background-color: #fff;
-  box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.05);
+  border-color: var(--primary-color);
+  background-color: var(--bg-color);
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
 }
 
 .modal-textarea {
