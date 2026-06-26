@@ -21,11 +21,13 @@ function AdminDashboard() {
     });
     const [isSaving, setIsSaving] = useState(false);
 
+    // Profe: Se ejecuta al cargar la página para verificar permisos y cargar la lista de productos
     useEffect(() => {
         verificarAdmin();
         loadProducts();
     }, []);
 
+    // Profe: Validamos que el rol guardado en localStorage sea ADMIN, sino lo mandamos al login
     const verificarAdmin = () => {
         const role = localStorage.getItem("role");
         if (role !== "ADMIN") {
@@ -43,6 +45,7 @@ function AdminDashboard() {
         }
     };
 
+    // Profe: Preparamos los datos del producto existente en el formulario modal para editarlo
     const handleEdit = (product) => {
         setModalMode("edit");
         setCurrentProductId(product.id);
@@ -56,11 +59,12 @@ function AdminDashboard() {
         setShowModal(true);
     };
 
+    // Profe: Función para eliminar un producto mediante su ID
     const handleDelete = async (id) => {
         if (window.confirm("¿Estás seguro de que deseas eliminar este producto?")) {
             try {
                 await productService.delete(id);
-                loadProducts();
+                loadProducts(); // Recargamos la tabla para que desaparezca visualmente
             } catch (err) {
                 console.log(err);
                 alert("Error al eliminar el producto");
@@ -68,6 +72,7 @@ function AdminDashboard() {
         }
     };
 
+    // Profe: Esta función sirve tanto para Crear (POST) como para Actualizar (PUT) dependiendo del estado modalMode
     const handleSave = async (e) => {
         e.preventDefault();
         setIsSaving(true);
@@ -77,11 +82,13 @@ function AdminDashboard() {
                 precio: parseFloat(formData.precio),
                 stock: parseInt(formData.stock)
             };
+            
             if (modalMode === "create") {
                 await productService.create(productToSave);
             } else {
                 await productService.update(currentProductId, productToSave);
             }
+            
             setShowModal(false);
             setFormData({ nombre: "", descripcion: "", precio: "", stock: "", imagen_url: "" });
             loadProducts();

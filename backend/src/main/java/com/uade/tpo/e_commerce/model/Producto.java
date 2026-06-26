@@ -26,6 +26,9 @@ public class Producto {
     @Column(nullable = false)
     private Integer stock;
 
+    // Profe: Usamos JsonProperty para que Jackson pueda mapear el campo "imagen_url" del frontend
+    // a la variable "imagenUrl" de Java, solucionando el problema de que no se guardaban las fotos.
+    @com.fasterxml.jackson.annotation.JsonProperty("imagen_url")
     @Column(length = 2048)
     private String imagenUrl;
 
@@ -43,6 +46,9 @@ public class Producto {
     @OneToMany(mappedBy = "producto", cascade = CascadeType.ALL)
     private List<ItemCarrito> itemsCarrito = new ArrayList<>();
 
+    // Profe: Agregamos CascadeType.ALL acá para que al eliminar un producto,
+    // se eliminen automáticamente todos los registros asociados en la tabla de favoritos.
+    // Esto evita el error de violación de Foreign Key (DataIntegrityViolationException).
     @OneToMany(mappedBy = "producto", cascade = CascadeType.ALL)
     private List<Favorito> favoritos = new ArrayList<>();
 }
