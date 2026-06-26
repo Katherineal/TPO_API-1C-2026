@@ -6,7 +6,7 @@ import './perfil.css';
 
 function Perfil() {
   const navigate = useNavigate();
-  const token = localStorage.getItem('token');
+  const userId = localStorage.getItem('userId');
   const userEmail = localStorage.getItem('email');
 
   // Estados del formulario de datos personales
@@ -28,14 +28,14 @@ function Perfil() {
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
 
-  // Proteger la ruta: Si no hay token, redirigir a Login inmediatamente
+  // Profe: Proteger la ruta usando el userId, si no existe redirigimos al login
   useEffect(() => {
-    if (!token) {
+    if (!userId) {
       navigate('/login');
       return;
     }
     fetchUserData();
-  }, [token]);
+  }, [userId]);
 
   // Simulación u obtención de los datos actuales del usuario desde el backend
   const fetchUserData = async () => {

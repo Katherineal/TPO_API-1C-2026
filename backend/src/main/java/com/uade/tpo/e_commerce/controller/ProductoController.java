@@ -21,46 +21,48 @@ import org.springframework.web.bind.annotation.PutMapping;
 
 
 
-//REST controller para manejar las peticiones HTTP relacionadas con los productos
-
+// Profe: Este es el controlador REST principal para la gestión de productos.
+// Expone los endpoints bajo la ruta "/api/productos".
 @RestController
-// para acceder a este controlador, la URL base será /api/productos
 @RequestMapping("/api/productos")
 public class ProductoController {
 
     @Autowired
     private ProductoService productoService;
 
-    //http://localhost:8080/api/productos -> devuelve la lista de productos
+    // Profe: Endpoint GET abierto a todos. Llama al servicio para obtener todos los productos.
     @GetMapping
     public ResponseEntity<List<ProductoDto>> getAllProductos() {
         return ResponseEntity.ok(productoService.getAllProductos());
     }
 
-    //http://localhost:8080/api/productos/1 -> devuelve el producto con id 1
+    // Profe: Endpoint GET para obtener el detalle de un solo producto según su ID.
     @GetMapping("/{id}")
     public ResponseEntity<ProductoDto> getProductoById(@PathVariable Long id) {
         ProductoDto producto = productoService.getProductoById(id);
         return producto != null ? ResponseEntity.ok(producto) : ResponseEntity.notFound().build();
     }
 
-    // del http://localhost:8080/api/productos/1 -> elimina el producto con id 1
+    // Profe: Endpoint DELETE protegido (sólo Admin) que elimina un producto específico.
+    // Usamos el id pasado como variable de ruta.
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteProductoById(@PathVariable Long id) {
         productoService.deleteProductoById(id);
         return ResponseEntity.noContent().build();
     }
 
+    // Profe: Endpoint POST protegido para la creación de un nuevo producto.
+    // Recibe el ProductoDto desde el cuerpo (body) de la petición HTTP.
     @PostMapping
     public ResponseEntity<ProductoDto> saveProducto(@RequestBody ProductoDto productoDto) {
+        System.out.println("========== POST /api/productos CATCHED ==========");
+        System.out.println("Payload recibido: " + productoDto);
         return new ResponseEntity<>(productoService.saveProducto(productoDto), HttpStatus.CREATED);
-
     }
     
+    // Profe: Endpoint PUT protegido para actualizar un producto existente.
     @PutMapping("/{id}")
     public ResponseEntity<ProductoDto> udpateProducto(@PathVariable Long id, @RequestBody ProductoDto productoDto) {
         return ResponseEntity.ok(productoService.updateProducto(id, productoDto));
     }
-    
-    
 }
