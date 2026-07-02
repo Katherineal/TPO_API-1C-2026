@@ -9,31 +9,33 @@ import Carrito from "../pages/Carrito/Carrito";
 import Favoritos from "../pages/Favoritos/Favoritos";
 import ProductDetail from "../pages/Productos/[id]/ProductDetail";
 import Perfil from "../pages/Perfil/Perfil";
+import ScrollToTop from "../components/ScrollToTop";
 
 function AppRoutes() {
     return (
-        <Routes>
-            <Route path="/" element={<Home />} />
+        <>
+            <ScrollToTop />
 
-            <Route path="/productos" element={<Productos />} />
+            <Routes>
+                <Route path="/" element={<Home />} />
 
-            <Route path="/login" element={<Login />} />
+                <Route path="/productos" element={<Productos />} />
 
-            <Route path="/register" element={<Register />} />
+                <Route path="/login" element={<Login />} />
 
-            <Route path="/admin" element={<AdminDashboard />} />
+                <Route path="/register" element={<Register />} />
 
-            <Route path="/carrito" element={<Carrito />} />
+                <Route path="/admin" element={<AdminDashboard />} />
 
-            <Route path="/favoritos" element={<Favoritos />} />
+                <Route path="/carrito" element={<Carrito />} />
 
-            <Route path="/productos/:id" element={<ProductDetail />} /> // enrutamiento dinamico para mostrar el detalle de un 
-            producto específico, usando el parámetro :id para identificar el producto
+                <Route path="/favoritos" element={<Favoritos />} />
 
-            <Route path="/perfil" element={<Perfil />} />
+                <Route path="/productos/:id" element={<ProductDetail />} /> {/* enrutamiento dinamico para mostrar el detalle de un producto específico, usando el parámetro :id para identificar el producto */}
 
-
-        </Routes>
+                <Route path="/perfil" element={<Perfil />} />
+            </Routes>
+        </>
     );
 }
 

@@ -9,7 +9,7 @@ export const login = createAsyncThunk(
             const response = await API.post("/api/auth/login", credentials);
             
             // Guardamos en localStorage para persistencia básica
-            // localStorage.setItem("token", response.data.token);
+            localStorage.setItem("token", response.data.token);
             localStorage.setItem("role", response.data.role);
             localStorage.setItem("email", credentials.email);
             localStorage.setItem("userId", response.data.id);
@@ -60,7 +60,7 @@ const authSlice = createSlice({
             state.user = { email: null, role: null };
             state.token = null;
             state.isAuthenticated = false;
-            // localStorage.removeItem("token");
+            localStorage.removeItem("token");
             localStorage.removeItem("role");
             localStorage.removeItem("email");
             localStorage.removeItem("userId");

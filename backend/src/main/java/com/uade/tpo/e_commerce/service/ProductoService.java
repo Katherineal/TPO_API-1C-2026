@@ -42,7 +42,9 @@ public class ProductoService {
         if (!productoRepository.existsById(id)) {
             throw new ResourceNotFoundException("Producto no encontrado con el id: " + id);
         }
+        productoRepository.deleteCategoriasByProductoId(id);
         productoRepository.deleteById(id);
+
     }
 
     public ProductoDto saveProducto(ProductoDto productoDto) {

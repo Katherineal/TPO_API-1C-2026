@@ -10,37 +10,26 @@ import './ProductDetail.css';
 function ProductDetail() {
 
   const { id } = useParams();
-
   const navigate = useNavigate();
 
   const { addToCart, cartCount } = useCart();
+  const { addToFavorite, isFavorite } = useFavorite();
 
-  const { addToFavorite, isFavorite } =
-    useFavorite();
+  const [product, setProduct] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [isAdding, setIsAdding] = useState(false);
+  const [quantity, setQuantity] = useState(1);
 
-  const [product, setProduct] =
-    useState(null);
+  // El token ya no se guarda; la sesión se detecta por userId
+  const isLoggedIn = !!localStorage.getItem("userId");
 
-  const [loading, setLoading] =
-    useState(true);
-
-  const [error, setError] =
-    useState(null);
-
-  const [isAdding, setIsAdding] =
-    useState(false);
-
-  const [quantity, setQuantity] =
-    useState(1);
-
-  const token =
-    localStorage.getItem('userId');
-
-  const isFav =
-    isFavorite(parseInt(id));
+  const isFav = isFavorite(parseInt(id));
 
   useEffect(() => {
     fetchProduct();
+    // Al entrar al detalle, hacer scroll al top
+    window.scrollTo(0, 0);
   }, [id]);
 
   const fetchProduct = async () => {
@@ -58,353 +47,167 @@ function ProductDetail() {
   };
 
   const handleAddToCart = () => {
-
-    if (!token) {
-
-      alert(
-        'Debes iniciar sesión para agregar productos al carrito.'
-      );
-
+    if (!isLoggedIn) {
+      alert('Debes iniciar sesión para agregar productos al carrito.');
       navigate('/login');
-
       return;
     }
 
     if (product.stock === 0) return;
 
-    const cartItem = {
-      ...product,
-      quantity
-    };
-
-    addToCart(cartItem);
-
+    addToCart({ ...product, quantity });
     setIsAdding(true);
-
-    setTimeout(() => {
-
-      setIsAdding(false);
-
-    }, 2000);
+    setTimeout(() => setIsAdding(false), 2000);
   };
 
   const handleToggleFavorite = () => {
-
-    if (!token) {
-
-      alert(
-        'Debes iniciar sesión para agregar favoritos.'
-      );
-
+    if (!isLoggedIn) {
+      alert('Debes iniciar sesión para agregar favoritos.');
       navigate('/login');
-
       return;
     }
-
     addToFavorite(product);
   };
 
   const handleQuantityChange = (e) => {
-
-    const value =
-      parseInt(e.target.value);
-
-    if (
-      value > 0 &&
-      value <= product.stock
-    ) {
-
+    const value = parseInt(e.target.value);
+    if (value > 0 && value <= product.stock) {
       setQuantity(value);
     }
   };
 
-  const isOutOfStock =
-    product?.stock === 0;
-
-  const isLowStock =
-    product?.stock > 0 &&
-    product?.stock <= 5;
+  const isOutOfStock = product?.stock === 0;
+  const isLowStock = product?.stock > 0 && product?.stock <= 5;
 
   if (loading) {
-
     return (
-
       <MainLayout cartCount={cartCount}>
-
         <div className="product-detail-container">
-
-          <div className="loading">
-            Cargando producto...
-          </div>
-
+          <div className="loading">Cargando producto...</div>
         </div>
-
       </MainLayout>
     );
   }
 
   if (error || !product) {
-
     return (
-
       <MainLayout cartCount={cartCount}>
-
         <div className="product-detail-container">
-
           <div className="error-message">
-
-            <h2>
-              Producto no encontrado
-            </h2>
-
+            <h2>Producto no encontrado</h2>
             <p>{error}</p>
-
-            <button
-              className="btn-back"
-              onClick={() =>
-                navigate('/productos')
-              }
-            >
+            <button className="btn-back" onClick={() => navigate('/productos')}>
               Volver a Productos
             </button>
-
           </div>
-
         </div>
-
       </MainLayout>
     );
   }
 
   const image =
-    product.imagen_url &&
-      product.imagen_url.trim() !== ""
+    product.imagenUrl && product.imagenUrl.trim() !== ""
+      ? product.imagenUrl
+      : product.imagen_url && product.imagen_url.trim() !== ""
       ? product.imagen_url
       : "https://placehold.co/600x600?text=Producto";
 
   return (
-
     <MainLayout cartCount={cartCount}>
-
       <div className="product-detail-container">
 
-        <button
-          className="btn-back"
-          onClick={() =>
-            navigate('/productos')
-          }
-        >
+        <button className="btn-back" onClick={() => navigate('/productos')}>
           ← Volver
         </button>
 
         <div className="product-detail-content">
 
           <div className="product-detail-image">
-
-            <img
-              src={image}
-              alt={product.nombre}
-            />
-
+            <img src={image} alt={product.nombre} />
           </div>
 
           <div className="product-detail-info">
 
             <div className="product-detail-header">
-
-              <h1>
-                {product.nombre}
-              </h1>
-
-              {
-                isOutOfStock && (
-
-                  <span className="badge-stock out-of-stock">
-                    Agotado
-                  </span>
-                )
-              }
-
-              {
-                isLowStock &&
-                !isOutOfStock && (
-
-                  <span className="badge-stock low-stock">
-                    Bajo Stock
-                  </span>
-                )
-              }
-
+              <h1>{product.nombre}</h1>
+              {isOutOfStock && (
+                <span className="badge-stock out-of-stock">Agotado</span>
+              )}
+              {isLowStock && !isOutOfStock && (
+                <span className="badge-stock low-stock">Bajo Stock</span>
+              )}
             </div>
 
             <div className="product-detail-price">
-
-              <span className="price">
-                ${product.precio}
-              </span>
-
+              <span className="price">${product.precio}</span>
             </div>
 
             <div className="product-detail-description">
-
-              <h3>
-                Descripción
-              </h3>
-
-              <p>
-                {product.descripcion}
-              </p>
-
+              <h3>Descripción</h3>
+              <p>{product.descripcion}</p>
             </div>
 
             <div className="product-detail-specs">
-
               <div className="spec">
-
-                <span className="label">
-                  Stock disponible:
-                </span>
-
-                <span className="value">
-                  {product.stock} unidades
-                </span>
-
+                <span className="label">Stock disponible:</span>
+                <span className="value">{product.stock} unidades</span>
               </div>
-
-              <div className="spec">
-
-                <span className="label">
-                  Categoría:
-                </span>
-
-                <span className="value">
-                  {product.categoria}
-                </span>
-
-              </div>
-
+              {product.categorias && product.categorias.length > 0 && (
+                <div className="spec">
+                  <span className="label">Categoría:</span>
+                  <span className="value">
+                    {product.categorias.map(c => c.nombre).join(', ')}
+                  </span>
+                </div>
+              )}
             </div>
 
             <div className="product-detail-actions">
 
-              {
-                !isOutOfStock && (
-
-                  <div className="quantity-selector">
-
-                    <label htmlFor="quantity">
-                      Cantidad:
-                    </label>
-
-                    <select
-                      id="quantity"
-                      value={quantity}
-                      onChange={
-                        handleQuantityChange
-                      }
-                    >
-
-                      {
-                        Array.from(
-                          {
-                            length:
-                              product.stock
-                          },
-                          (_, i) => (
-
-                            <option
-                              key={i + 1}
-                              value={i + 1}
-                            >
-                              {i + 1}
-                            </option>
-                          )
-                        )
-                      }
-
-                    </select>
-
-                  </div>
-                )
-              }
+              {!isOutOfStock && (
+                <div className="quantity-selector">
+                  <label htmlFor="quantity">Cantidad:</label>
+                  <select id="quantity" value={quantity} onChange={handleQuantityChange}>
+                    {Array.from({ length: product.stock }, (_, i) => (
+                      <option key={i + 1} value={i + 1}>{i + 1}</option>
+                    ))}
+                  </select>
+                </div>
+              )}
 
               <div className="action-buttons">
-
                 <button
-                  className={`
-                    btn-add-to-cart
-                    ${isAdding
-                      ? 'adding'
-                      : ''
-                    }
-                    ${isOutOfStock
-                      ? 'disabled'
-                      : ''
-                    }
-                  `}
+                  className={`btn-add-to-cart ${isAdding ? 'adding' : ''} ${isOutOfStock ? 'disabled' : ''}`}
                   disabled={isOutOfStock}
-                  onClick={
-                    handleAddToCart
-                  }
+                  onClick={handleAddToCart}
                 >
-
-                  <span>
-
-                    {
-                      isAdding
-                        ? '✓ Agregado'
-                        : 'Agregar al carrito'
-                    }
-
-                  </span>
-
+                  <span>{isAdding ? '✓ Agregado' : 'Agregar al carrito'}</span>
                 </button>
 
                 <button
-                  className={`
-                    btn-favorite
-                    ${isFav
-                      ? 'active'
-                      : ''
-                    }
-                  `}
-                  onClick={
-                    handleToggleFavorite
-                  }
+                  className={`btn-favorite ${isFav ? 'active' : ''}`}
+                  onClick={handleToggleFavorite}
                 >
-
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     width="24"
                     height="24"
                     viewBox="0 0 24 24"
-                    fill={
-                      isFav
-                        ? 'currentColor'
-                        : 'none'
-                    }
+                    fill={isFav ? 'currentColor' : 'none'}
                     stroke="currentColor"
                     strokeWidth="2"
                     strokeLinecap="round"
                     strokeLinejoin="round"
                   >
-
                     <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
-
                   </svg>
-
                 </button>
-
               </div>
 
             </div>
-
           </div>
-
         </div>
-
       </div>
-
     </MainLayout>
   );
 }

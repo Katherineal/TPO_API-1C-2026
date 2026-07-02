@@ -12,18 +12,21 @@ function AdminDashboard() {
     const [showModal, setShowModal] = useState(false);
     const [modalMode, setModalMode] = useState("create");
     const [currentProductId, setCurrentProductId] = useState(null);
+    const [categorias, setCategorias] = useState([]);
     const [formData, setFormData] = useState({
         nombre: "",
         descripcion: "",
         precio: "",
         stock: "",
-        imagen_url: ""
+        imagen_url: "",
+        categorias: []
     });
     const [isSaving, setIsSaving] = useState(false);
 
     // Profe: Se ejecuta al cargar la página para verificar permisos y cargar la lista de productos
     useEffect(() => {
         verificarAdmin();
+        loadCategorias();
         loadProducts();
     }, []);
 
@@ -45,6 +48,24 @@ function AdminDashboard() {
         }
     };
 
+    const loadCategorias = async () => {
+        try {
+            const response = await fetch(
+                "http://localhost:8080/api/categorias"
+            );
+
+            if (!response.ok) {
+                throw new Error("Error cargando categorías");
+            }
+
+            const data = await response.json();
+
+            setCategorias(data);
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
     // Profe: Preparamos los datos del producto existente en el formulario modal para editarlo
     const handleEdit = (product) => {
         setModalMode("edit");
@@ -54,7 +75,8 @@ function AdminDashboard() {
             descripcion: product.descripcion,
             precio: product.precio,
             stock: product.stock,
-            imagen_url: product.imagen_url || ""
+            imagen_url: product.imagen_url || "",
+            categorias: product.categorias || []
         });
         setShowModal(true);
     };
@@ -82,15 +104,15 @@ function AdminDashboard() {
                 precio: parseFloat(formData.precio),
                 stock: parseInt(formData.stock)
             };
-            
+
             if (modalMode === "create") {
                 await productService.create(productToSave);
             } else {
                 await productService.update(currentProductId, productToSave);
             }
-            
+
             setShowModal(false);
-            setFormData({ nombre: "", descripcion: "", precio: "", stock: "", imagen_url: "" });
+            setFormData({ nombre: "", descripcion: "", precio: "", stock: "", imagen_url: "", categorias: [] });
             loadProducts();
         } catch (err) {
             console.log("Error guardando producto:", err);
@@ -102,7 +124,7 @@ function AdminDashboard() {
 
     const openCreateModal = () => {
         setModalMode("create");
-        setFormData({ nombre: "", descripcion: "", precio: "", stock: "", imagen_url: "" });
+        setFormData({ nombre: "", descripcion: "", precio: "", stock: "", imagen_url: "", categorias: [] });
         setShowModal(true);
     };
 
@@ -115,8 +137,8 @@ function AdminDashboard() {
                         <h1>Panel Administrador</h1>
                         <p>Gestiona productos y stock</p>
                     </div>
-                    <button 
-                        onClick={openCreateModal} 
+                    <button
+                        onClick={openCreateModal}
                         className="save-btn"
                         style={{ padding: '12px 24px', fontSize: '1rem' }}
                     >
@@ -152,6 +174,57 @@ function AdminDashboard() {
                                     <input placeholder="https://unsplash.com/..." value={formData.imagen_url} onChange={e => setFormData({...formData, imagen_url: e.target.value})} className="modal-input" />
                                 </div>
                                 <div className="form-group full-width">
+                                    <label>Categorías</label>
+
+                                    <div style={{
+                                        display: "flex",
+                                        flexWrap: "wrap",
+                                        gap: "10px",
+                                        marginTop: "10px"
+                                    }}>
+                                        {categorias.map((categoria) => (
+                                            <label
+                                                key={categoria.id}
+                                                style={{
+                                                    display: "flex",
+                                                    alignItems: "center",
+                                                    gap: "5px"
+                                                }}
+                                            >
+                                                <input
+                                                    type="checkbox"
+                                                    checked={
+                                                        formData.categorias.some(
+                                                            c => c.id === categoria.id
+                                                        )
+                                                    }
+                                                    onChange={(e) => {
+                                                        if (e.target.checked) {
+                                                            setFormData({
+                                                                ...formData,
+                                                                categorias: [
+                                                                    ...formData.categorias,
+                                                                    { id: categoria.id }
+                                                                ]
+                                                            });
+                                                        } else {
+                                                            setFormData({
+                                                                ...formData,
+                                                                categorias:
+                                                                    formData.categorias.filter(
+                                                                        c => c.id !== categoria.id
+                                                                    )
+                                                            });
+                                                        }
+                                                    }}
+                                                />
+
+                                                {categoria.nombre}
+                                            </label>
+                                        ))}
+                                    </div>
+                                </div>
+                                <div className="form-group full-width">
                                     <label>Descripción breve</label>
                                     <textarea required placeholder="Características principales del producto..." value={formData.descripcion} onChange={e => setFormData({...formData, descripcion: e.target.value})} className="modal-input modal-textarea" />
                                 </div>
@@ -162,7 +235,6 @@ function AdminDashboard() {
                         </div>
                     </div>
                 )}
-
                 <table className="products-table">
                     <thead>
                         <tr>
