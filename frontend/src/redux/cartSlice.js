@@ -64,7 +64,7 @@ export const updateQuantityAsync = createAsyncThunk(
 );
 
 // Mapea los items del CarritoDto (del backend) al formato que usa el frontend.
-// El backend devuelve ItemCarritoDto que tiene: id, productoId, productoNombre, cantidad, precioUnitario, subtotal.
+// El backend devuelve ItemCarritoDto que tiene: id, productoId, productoNombre, productoImagenUrl, cantidad, precioUnitario, subtotal.
 const mapBackendCartToItems = (carritoDto) => {
     if (!carritoDto || !carritoDto.items) return [];
     return carritoDto.items.map(item => ({
@@ -72,7 +72,7 @@ const mapBackendCartToItems = (carritoDto) => {
         itemId: item.id, // ID del item en el carrito, necesario para borrar/actualizar cantidad en backend
         nombre: item.productoNombre,
         precio: item.precioUnitario,
-        imagen: "", // backend DTO doesn't include image, might need to fetch separately or rely on existing store if possible. For now fallback to empty or handle in UI
+        imagen: item.productoImagenUrl || "",
         quantity: item.cantidad,
         subtotal: item.subtotal
     }));

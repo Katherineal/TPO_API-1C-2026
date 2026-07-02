@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 
 import productService from "../../services/productService";
+import categoriaService from "../../services/categoriaService";
 
 import "./AdminDashboard.css";
 import MainLayout from "../../layouts/MainLayout";
@@ -50,16 +51,7 @@ function AdminDashboard() {
 
     const loadCategorias = async () => {
         try {
-            const response = await fetch(
-                "http://localhost:8080/api/categorias"
-            );
-
-            if (!response.ok) {
-                throw new Error("Error cargando categorías");
-            }
-
-            const data = await response.json();
-
+            const data = await categoriaService.getAll();
             setCategorias(data);
         } catch (error) {
             console.error(error);

@@ -63,7 +63,10 @@ public class FavoritoService {
                 .usuarioId(favorito.getUsuario().getId())
                 .productoId(favorito.getProducto().getId())
                 .productoNombre(favorito.getProducto().getNombre())
+                .productoDescripcion(favorito.getProducto().getDescripcion())
                 .productoPrecio(favorito.getProducto().getPrecio())
+                .productoStock(favorito.getProducto().getStock())
+                .productoImagenUrl(favorito.getProducto().getImagenUrl())
                 .build();
     }
 }

@@ -13,6 +13,7 @@ public class ItemCarritoDto {
     private Long id;
     private Long productoId;
     private String productoNombre;
+    private String productoImagenUrl;
     private Integer cantidad;
     private Double precioUnitario;
     private Double subtotal; // cantidad * precioUnitario

@@ -14,5 +14,8 @@ public class FavoritoDto {
     private Long usuarioId;
     private Long productoId;
     private String productoNombre;
+    private String productoDescripcion;
     private Double productoPrecio;
+    private Integer productoStock;
+    private String productoImagenUrl;
 }

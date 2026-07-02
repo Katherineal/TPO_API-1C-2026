@@ -4,13 +4,13 @@ import { useSearchParams } from "react-router-dom";
 import MainLayout from "../../layouts/MainLayout";
 import ProductCard from "../../components/ProductCard/ProductCard";
 import productService from "../../services/productService";
+import categoriaService from "../../services/categoriaService";
 
 import "./Productos.css";
 
-const CATEGORIES = ["Laptops", "Smartphones", "Audio Premium", "Smartwatches", "Accesorios"];
-
 function Productos() {
   const [products, setProducts] = useState([]);
+  const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -31,7 +31,18 @@ function Productos() {
 
   useEffect(() => {
     loadProducts();
+    loadCategories();
   }, []);
+
+  const loadCategories = async () => {
+    try {
+      const data = await categoriaService.getAll();
+      setCategories(data);
+    } catch (err) {
+      console.log("Error cargando categorías:", err);
+      setCategories([]);
+    }
+  };
 
   const loadProducts = async () => {
     try {
@@ -189,13 +200,13 @@ function Productos() {
         {/* ===== CATEGORÍAS ===== */}
         <div className="filter-section" style={{ marginBottom: "2rem" }}>
           <ul className="category-list">
-            {CATEGORIES.map((cat) => (
-              <li key={cat}>
+            {categories.map((categoria) => (
+              <li key={categoria.id}>
                 <button
-                  className={`category-btn${selectedCategory === cat ? " active" : ""}`}
-                  onClick={() => handleCategorySelect(cat)}
+                  className={`category-btn${selectedCategory === categoria.nombre ? " active" : ""}`}
+                  onClick={() => handleCategorySelect(categoria.nombre)}
                 >
-                  {cat}
+                  {categoria.nombre}
                 </button>
               </li>
             ))}

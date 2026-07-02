@@ -1,33 +1,66 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
+import favoritoService from "../services/favoritoService";
 
 export const FavoriteContext = createContext();
+
+const mapFavoritoToProduct = (favorito) => ({
+  id: favorito.productoId,
+  nombre: favorito.productoNombre,
+  descripcion: favorito.productoDescripcion,
+  precio: favorito.productoPrecio,
+  stock: favorito.productoStock,
+  imagen_url: favorito.productoImagenUrl,
+});
 
 export function FavoriteProvider({ children }) {
 
   const [favoriteItems, setFavoriteItems] =
     useState([]);
 
-  const addToFavorite = (producto) => {
+  // Cargamos los favoritos guardados en la base de datos al iniciar sesión / recargar la página
+  useEffect(() => {
+    const userId = localStorage.getItem("userId");
+    if (!userId) return;
+
+    favoritoService.getByUsuario(userId)
+      .then(data => setFavoriteItems(data.map(mapFavoritoToProduct)))
+      .catch(err => console.log("Error cargando favoritos:", err));
+  }, []);
+
+  const addToFavorite = async (producto) => {
+
+    const userId = localStorage.getItem("userId");
+    if (!userId) return;
 
     const existe =
       favoriteItems.find(
         item => item.id === producto.id
       );
 
-    if (existe) {
+    try {
 
-      setFavoriteItems(
-        favoriteItems.filter(
-          item => item.id !== producto.id
-        )
-      );
+      if (existe) {
 
-    } else {
+        await favoritoService.remove(userId, producto.id);
 
-      setFavoriteItems([
-        ...favoriteItems,
-        producto
-      ]);
+        setFavoriteItems(
+          favoriteItems.filter(
+            item => item.id !== producto.id
+          )
+        );
+
+      } else {
+
+        await favoritoService.add(userId, producto.id);
+
+        setFavoriteItems([
+          ...favoriteItems,
+          producto
+        ]);
+      }
+
+    } catch (err) {
+      console.log("Error actualizando favoritos:", err);
     }
   };
 
@@ -38,13 +71,24 @@ export function FavoriteProvider({ children }) {
     );
   };
 
-  const removeFromFavorite = (productoId) => {
+  const removeFromFavorite = async (productoId) => {
 
-    setFavoriteItems(
-      favoriteItems.filter(
-        item => item.id !== productoId
-      )
-    );
+    const userId = localStorage.getItem("userId");
+    if (!userId) return;
+
+    try {
+
+      await favoritoService.remove(userId, productoId);
+
+      setFavoriteItems(
+        favoriteItems.filter(
+          item => item.id !== productoId
+        )
+      );
+
+    } catch (err) {
+      console.log("Error quitando favorito:", err);
+    }
   };
 
   return (

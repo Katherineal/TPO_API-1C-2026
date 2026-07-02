@@ -61,10 +61,10 @@ public class CategoriaService {
 
     public Categoria mapToEntity(CategoriaDto categoriaDto) {
         if (categoriaDto == null) return null;
-        Categoria categoria = new Categoria();
         if (categoriaDto.getId() != null) {
-            categoria.setId(categoriaDto.getId());
+            return categoriaRepository.getReferenceById(categoriaDto.getId());
         }
+        Categoria categoria = new Categoria();
         categoria.setNombre(categoriaDto.getNombre());
         return categoria;
     }
