@@ -24,7 +24,9 @@ public class AuthenticationService {
 
         public AuthenticationResponse register(RegisterRequest request) {
 
-                Role assignedRole = request.getEmail().toLowerCase().contains("admin") ? Role.ADMIN : Role.USER;
+                // El registro público siempre crea usuarios comunes. El administrador se crea
+                // al iniciar la aplicación desde la configuración (ver AdminInitializer).
+                Role assignedRole = Role.USER;
 
                 var user = Usuario.builder()
                                 .nombre(request.getNombre())
